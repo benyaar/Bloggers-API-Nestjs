@@ -5,12 +5,14 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/user.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { PostsModule } from './post/posts.module';
+import { DeleteAllModule } from './testing/delete-all.module';
 
 @Module({
   imports: [
     UsersModule,
     BlogsModule,
     PostsModule,
+    DeleteAllModule,
     MongooseModule.forRoot(
       'mongodb+srv://admin:admin@backapi.wojaaxk.mongodb.net/?retryWrites=true&w=majority',
     ),
