@@ -8,3 +8,12 @@ export class BlogInputDTO {
   @IsUrl()
   websiteUrl: string;
 }
+
+export class PostInputDTO {
+  @Length(1, 30)
+  title: string;
+  @Length(1, 1000)
+  shortDescription: string;
+  @Length(1, 1000)
+  content: string;
+}

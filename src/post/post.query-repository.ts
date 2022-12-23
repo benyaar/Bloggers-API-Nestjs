@@ -54,4 +54,35 @@ export class PostQueryRepository {
   async findPostById(id: string) {
     return this.postsModel.findOne({ id }, options);
   }
+  async findBlogsPosts(paginationInputDTO: PaginationInputDTO, blogId: string) {
+    const searchNameTerm: string = paginationInputDTO.searchNameTerm;
+    const sortBy: string = paginationInputDTO.sortBy;
+    const pageNumber: number = +paginationInputDTO.pageNumber;
+    const pageSize: number = +paginationInputDTO.pageSize;
+    let sortDirection: any = paginationInputDTO.sortDirection;
+
+    if (sortDirection !== ('asc' || 'desc')) sortDirection = 'desc';
+
+    const findAndSortedPosts = await this.postsModel
+      .find(
+        { blogId: blogId, name: { $regex: searchNameTerm, $options: 'i' } },
+        options,
+      )
+      .lean()
+      .sort({ [sortBy]: sortDirection })
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+
+    const getCountBlogs = await this.postsModel.countDocuments({
+      blogId: blogId,
+      name: { $regex: searchNameTerm, $options: 'i' },
+    });
+
+    return paginationResult(
+      pageNumber,
+      pageSize,
+      getCountBlogs,
+      findAndSortedPosts,
+    );
+  }
 }

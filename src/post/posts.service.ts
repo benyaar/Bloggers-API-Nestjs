@@ -5,7 +5,6 @@ import * as mongoose from 'mongoose';
 import ObjectId = mongoose.Types.ObjectId;
 import { InputPostDTO } from './dto/input-post.dto';
 import { BlogsViewType } from '../blogs/schemas/blogs.schema';
-import { PaginationInputDTO } from '../helpers/dto/helpers.dto';
 
 @Injectable()
 export class PostsService {
