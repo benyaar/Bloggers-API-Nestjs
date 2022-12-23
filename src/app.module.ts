@@ -16,22 +16,11 @@ import { DeleteAllModule } from './testing/delete-all.module';
     MongooseModule.forRoot(
       'mongodb+srv://admin:admin@backapi.wojaaxk.mongodb.net/?retryWrites=true&w=majority',
     ),
+    // MongooseModule.forRoot(
+    //   'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1',
+    // ),
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
-
-// @Module({
-//   imports: [
-//     UsersModule,
-//     BlogsModule,
-//     PostsModule,
-//     MongooseModule.forRoot(
-//       'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1',
-//     ),
-//   ],
-//   controllers: [AppController],
-//   providers: [AppService],
-// })
-// export class AppModule {}

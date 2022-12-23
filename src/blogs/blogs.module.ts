@@ -6,6 +6,8 @@ import { BlogsController } from './blogs.controller';
 import { BlogsService } from './blogs.service';
 import { BlogsRepository } from './blogs.repository';
 import { BlogQueryRepository } from './blog.query-repository';
+import { PostsService } from '../post/posts.service';
+import { PostsRepository } from '../post/posts.repository';
 
 @Module({
   imports: [

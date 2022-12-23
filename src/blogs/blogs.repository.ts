@@ -17,7 +17,7 @@ export class BlogsRepository {
     blogId: string,
     blog: BlogInputDTO,
   ): Promise<BlogsDocument> {
-    return this.blogModel.findByIdAndUpdate(
+    return this.blogModel.findOneAndUpdate(
       { id: blogId },
       {
         name: blog.name,
@@ -32,6 +32,6 @@ export class BlogsRepository {
     // blogResult.save();
   }
   async deleteBlogById(id: string) {
-    return this.blogModel.findByIdAndDelete({ id });
+    return this.blogModel.deleteOne({ id });
   }
 }

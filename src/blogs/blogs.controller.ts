@@ -15,12 +15,15 @@ import { BlogInputDTO } from './dto/input-blog.dto';
 import { BlogQueryRepository } from './blog.query-repository';
 import { PaginationInputDTO } from '../helpers/dto/helpers.dto';
 import { BlogsViewType } from './schemas/blogs.schema';
+import { PostsService } from '../post/posts.service';
+import { InputPostDTO } from '../post/dto/input-post.dto';
 
 @Controller('blogs')
 export class BlogsController {
   constructor(
     public blogsService: BlogsService,
     public queryRepository: BlogQueryRepository,
+    public postService: PostsService,
   ) {}
   @Post()
   async createBlog(@Body() blogInputType: BlogInputDTO) {
@@ -56,12 +59,25 @@ export class BlogsController {
     await this.blogsService.updateBlogById(findBlogById.id, blogInputType);
     return;
   }
-  @Delete()
-  async deleteBlogById(@Param(':id') id: string) {
+  @Delete(':id')
+  @HttpCode(204)
+  async deleteBlogById(@Param('id') id: string) {
     const findBlogById = await this.queryRepository.findBlogById(id);
+
     if (!findBlogById) throw new NotFoundException();
 
     await this.blogsService.deleteBlogById(id);
     return;
+  }
+
+  @Post(':id/posts')
+  async createPostByBlodId(
+    @Param('id') id: string,
+    @Body() inputPostDTO: InputPostDTO,
+  ) {
+    const findBlogById = await this.queryRepository.findBlogById(id);
+    if (!findBlogById) throw new NotFoundException();
+
+    return this.postService.createNewPost(findBlogById, inputPostDTO);
   }
 }

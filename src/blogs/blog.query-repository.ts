@@ -4,7 +4,6 @@ import { Blog, BlogsDocument } from './schemas/blogs.schema';
 import { Model } from 'mongoose';
 import { PaginationInputDTO } from '../helpers/dto/helpers.dto';
 import { paginationResult } from '../helpers/pagination';
-import { PostsDocument, Post } from '../post/schemas/post.schema';
 
 const options = {
   _id: 0,
@@ -47,6 +46,6 @@ export class BlogQueryRepository {
     );
   }
   async findBlogById(id: string) {
-    return this.blogsModel.findOne({ id }, options);
+    return this.blogsModel.findOne({ id: id }, options);
   }
 }

@@ -1,7 +1,18 @@
-import { Body, Controller, NotFoundException, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  NotFoundException,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { InputPostDTO } from './dto/input-post.dto';
 import { PostQueryRepository } from './post.query-repository';
+import { PaginationInputDTO } from '../helpers/dto/helpers.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -20,6 +31,37 @@ export class PostsController {
         { message: 'blogId undefined', field: 'createNewPost' },
       ]);
 
-    return { ok: 'ok' };
+    const createNewBlog = await this.postsService.createNewPost(
+      findBlogById,
+      inputPostDTO,
+    );
+    return createNewBlog;
+  }
+  @Get()
+  async findAllPosts(@Body() paginationInputDTO: PaginationInputDTO) {
+    return this.postQueryRepository.findAllPosts(paginationInputDTO);
+  }
+  @Get(':id')
+  async findPostById(@Param('id') id: string) {
+    return this.postQueryRepository.findPostById(id);
+  }
+  @Put(':id')
+  @HttpCode(204)
+  async updatePostById(
+    @Param('id') id: string,
+    @Body() inputPostDTO: InputPostDTO,
+  ) {
+    const findPostById = await this.postQueryRepository.findPostById(id);
+    if (!findPostById) throw new NotFoundException();
+
+    return this.postsService.updatePostById(id, inputPostDTO);
+  }
+  @Delete(':id')
+  @HttpCode(204)
+  async deletePostById(@Param('id') id: string) {
+    const findPostById = await this.postQueryRepository.findPostById(id);
+    if (!findPostById) throw new NotFoundException();
+
+    return this.postsService.deletePostById(id);
   }
 }
