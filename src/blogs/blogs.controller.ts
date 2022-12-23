@@ -23,7 +23,6 @@ export class BlogsController {
   constructor(
     public blogsService: BlogsService,
     public queryRepository: BlogQueryRepository,
-    public postService: PostsService,
   ) {}
   @Post()
   async createBlog(@Body() blogInputType: BlogInputDTO) {
@@ -70,14 +69,14 @@ export class BlogsController {
     return;
   }
 
-  @Post(':id/posts')
-  async createPostByBlodId(
-    @Param('id') id: string,
-    @Body() inputPostDTO: InputPostDTO,
-  ) {
-    const findBlogById = await this.queryRepository.findBlogById(id);
-    if (!findBlogById) throw new NotFoundException();
-
-    return this.postService.createNewPost(findBlogById, inputPostDTO);
-  }
+  // @Post(':id/posts')
+  // async createPostByBlodId(
+  //   @Param('id') id: string,
+  //   @Body() inputPostDTO: InputPostDTO,
+  // ) {
+  //   const findBlogById = await this.queryRepository.findBlogById(id);
+  //   if (!findBlogById) throw new NotFoundException();
+  //
+  //   return this.postService.createNewPost(findBlogById, inputPostDTO);
+  // }
 }
