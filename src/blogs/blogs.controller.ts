@@ -79,13 +79,12 @@ export class BlogsController {
     const findBlogById = await this.queryBlogRepository.findBlogById(id);
     if (!findBlogById) throw new NotFoundException([]);
     const postData = { ...postInputDTO, blogId: id };
-
     return this.postsService.createNewPost(findBlogById, postData);
   }
   @Get(':id/posts')
   async findAllPostByBlogId(
     @Param('id') id: string,
-    @Body() paginationInputDTO: PaginationInputDTO,
+    @Query() paginationInputDTO: PaginationInputDTO,
   ) {
     const findBlogById = await this.queryBlogRepository.findBlogById(id);
     if (!findBlogById) throw new NotFoundException([]);
