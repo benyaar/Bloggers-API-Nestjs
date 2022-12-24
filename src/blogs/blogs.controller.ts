@@ -44,7 +44,7 @@ export class BlogsController {
   @Get(':id')
   async findBlogById(@Param('id') id: string) {
     const findBlogById = await this.queryBlogRepository.findBlogById(id);
-    if (!findBlogById) throw new NotFoundException();
+    if (!findBlogById) throw new NotFoundException([]);
 
     return findBlogById;
   }
@@ -55,7 +55,7 @@ export class BlogsController {
     @Body() blogInputType: BlogInputDTO,
   ) {
     const findBlogById = await this.queryBlogRepository.findBlogById(id);
-    if (!findBlogById) throw new NotFoundException();
+    if (!findBlogById) throw new NotFoundException([]);
 
     await this.blogsService.updateBlogById(findBlogById.id, blogInputType);
     return;
@@ -65,7 +65,7 @@ export class BlogsController {
   async deleteBlogById(@Param('id') id: string) {
     const findBlogById = await this.queryBlogRepository.findBlogById(id);
 
-    if (!findBlogById) throw new NotFoundException();
+    if (!findBlogById) throw new NotFoundException([]);
 
     await this.blogsService.deleteBlogById(id);
     return;
@@ -77,7 +77,7 @@ export class BlogsController {
     @Body() postInputDTO: PostInputDTO,
   ) {
     const findBlogById = await this.queryBlogRepository.findBlogById(id);
-    if (!findBlogById) throw new NotFoundException();
+    if (!findBlogById) throw new NotFoundException([]);
     const postData = { ...postInputDTO, blogId: id };
 
     return this.postsService.createNewPost(findBlogById, postData);
@@ -88,7 +88,7 @@ export class BlogsController {
     @Body() paginationInputDTO: PaginationInputDTO,
   ) {
     const findBlogById = await this.queryBlogRepository.findBlogById(id);
-    if (!findBlogById) throw new NotFoundException();
+    if (!findBlogById) throw new NotFoundException([]);
     return await this.queryPostRepository.findBlogsPosts(
       paginationInputDTO,
       id,

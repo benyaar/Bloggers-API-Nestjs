@@ -52,7 +52,7 @@ export class PostsController {
     @Body() inputPostDTO: InputPostDTO,
   ) {
     const findPostById = await this.postQueryRepository.findPostById(id);
-    if (!findPostById) throw new NotFoundException();
+    if (!findPostById) throw new NotFoundException([]);
 
     return this.postsService.updatePostById(id, inputPostDTO);
   }
@@ -60,7 +60,7 @@ export class PostsController {
   @HttpCode(204)
   async deletePostById(@Param('id') id: string) {
     const findPostById = await this.postQueryRepository.findPostById(id);
-    if (!findPostById) throw new NotFoundException();
+    if (!findPostById) throw new NotFoundException([]);
 
     return this.postsService.deletePostById(id);
   }
