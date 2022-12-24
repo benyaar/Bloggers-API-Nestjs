@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 
 import { Blog, BlogsDocument } from '../blogs/schemas/blogs.schema';
 import { Post, PostsDocument } from '../post/schemas/post.schema';
+import { User, UsersDocument } from '../users/schemas/user.schema';
 
 @Injectable()
 export class DeleteAllRepository {
@@ -12,6 +13,8 @@ export class DeleteAllRepository {
     private readonly postsModel: Model<PostsDocument>,
     @InjectModel(Blog.name)
     private readonly blogsModel: Model<BlogsDocument>,
+    @InjectModel(User.name)
+    private readonly usersModel: Model<UsersDocument>,
   ) {}
   async deleteAll() {
     await this.blogsModel.deleteMany();
