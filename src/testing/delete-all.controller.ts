@@ -1,12 +1,12 @@
 import { Controller, Delete, HttpCode } from '@nestjs/common';
 import { DeleteAllRepository } from './delete-all.repository';
 
-@Controller('testing/all-data')
+@Controller('testing')
 export class DeleteAllController {
-  constructor(public deleteAllRepostory: DeleteAllRepository) {}
-  @Delete()
+  constructor(public deleteAllRepository: DeleteAllRepository) {}
+  @Delete('all-data')
   @HttpCode(204)
   async deleteAll() {
-    return this.deleteAllRepostory.deleteAll();
+    return this.deleteAllRepository.deleteAll();
   }
 }

@@ -14,8 +14,8 @@ export class DeleteAllRepository {
     private readonly blogsModel: Model<BlogsDocument>,
   ) {}
   async deleteAll() {
-    this.blogsModel.deleteMany();
-    this.postsModel.deleteMany();
+    await this.blogsModel.deleteMany();
+    await this.postsModel.deleteMany();
     return;
   }
 }
