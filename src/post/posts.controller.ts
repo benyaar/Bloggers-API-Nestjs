@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { InputPostDTO } from './dto/input-post.dto';
@@ -38,11 +39,14 @@ export class PostsController {
     return createNewBlog;
   }
   @Get()
-  async findAllPosts(@Body() paginationInputDTO: PaginationInputDTO) {
+  async findAllPosts(@Query() paginationInputDTO: PaginationInputDTO) {
     return this.postQueryRepository.findAllPosts(paginationInputDTO);
   }
   @Get(':id')
   async findPostById(@Param('id') id: string) {
+    const findPostById = await this.postQueryRepository.findPostById(id);
+    if (!findPostById) throw new NotFoundException([]);
+
     return this.postQueryRepository.findPostById(id);
   }
   @Put(':id')
