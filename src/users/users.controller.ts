@@ -13,7 +13,10 @@ import {
 import { UsersService } from './users.service';
 import { InputUserDto } from './dto/input-user.dto';
 import { QueryUsersRepository } from './query-users.repository';
-import { PaginationInputDTO } from '../helpers/dto/helpers.dto';
+import {
+  PaginationInputDTO,
+  PaginationUserInputDTO,
+} from '../helpers/dto/helpers.dto';
 
 @Controller('users')
 export class UsersController {
@@ -28,7 +31,7 @@ export class UsersController {
   }
   @Get()
   //getUsers(@Query('term') term: string ) - или так getUsers(@Query() query: Type )
-  async findAllUsers(@Query() paginationInputDTO: PaginationInputDTO) {
+  async findAllUsers(@Query() paginationInputDTO: PaginationUserInputDTO) {
     return this.queryUserRepository.findAllUsers(paginationInputDTO);
   }
   @Get(':id')

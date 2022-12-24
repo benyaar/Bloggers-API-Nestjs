@@ -1,7 +1,7 @@
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UsersDocument } from './schemas/user.schema';
 import { Model } from 'mongoose';
-import { PaginationInputDTO } from '../helpers/dto/helpers.dto';
+import { PaginationUserInputDTO } from '../helpers/dto/helpers.dto';
 import { paginationResult } from '../helpers/pagination';
 
 const options = {
@@ -16,8 +16,9 @@ export class QueryUsersRepository {
   constructor(
     @InjectModel(User.name) private readonly usersModel: Model<UsersDocument>,
   ) {}
-  async findAllUsers(paginationInputDTO: PaginationInputDTO) {
-    const searchNameTerm: string = paginationInputDTO.searchNameTerm;
+  async findAllUsers(paginationInputDTO: PaginationUserInputDTO) {
+    const searchLoginTerm: string = paginationInputDTO.searchLoginTerm;
+    const searchEmailTerm: string = paginationInputDTO.searchEmailTerm;
     const sortBy: string = paginationInputDTO.sortBy;
     const pageNumber: number = +paginationInputDTO.pageNumber;
     const pageSize: number = +paginationInputDTO.pageSize;
@@ -26,14 +27,25 @@ export class QueryUsersRepository {
     if (sortDirection !== ('asc' || 'desc')) sortDirection = 'desc';
 
     const findAndSortedUsers = await this.usersModel
-      .find({ name: { $regex: searchNameTerm, $options: 'i' } }, options)
+      .find(
+        {
+          $or: [
+            { login: { $regex: searchLoginTerm, $options: 'i' } },
+            { email: { $regex: searchEmailTerm, $options: 'i' } },
+          ],
+        },
+        options,
+      )
       .lean()
       .sort({ [sortBy]: sortDirection })
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
 
     const getCountUsers = await this.usersModel.countDocuments({
-      name: { $regex: searchNameTerm, $options: 'i' },
+      $or: [
+        { login: { $regex: searchLoginTerm, $options: 'i' } },
+        { email: { $regex: searchEmailTerm, $options: 'i' } },
+      ],
     });
 
     return paginationResult(
