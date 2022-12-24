@@ -1,12 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { UsersType } from './users.model';
 import { UsersRepository } from './users.repository';
+import { UserViewType } from './schemas/user.schema';
+import { InputUserDto } from './dto/input-user.dto';
+import * as mongoose from 'mongoose';
+import ObjectId = mongoose.Types.ObjectId;
 
 @Injectable()
 export class UsersService {
   constructor(public usersRepository: UsersRepository) {}
-  async createUser(user: UsersType) {
-    const createNewUser = new UsersType(user.id, user.title, user.description);
-    return this.usersRepository.createUser(createNewUser);
+  async createUser(inputUserDTO: InputUserDto) {
+    const createNewUser = new UserViewType(
+      new ObjectId().toString(),
+      inputUserDTO.login,
+      inputUserDTO.email,
+      new Date(),
+    );
+    await this.usersRepository.createUser(createNewUser);
+    return createNewUser;
+  }
+  async deleteUserById(id: string) {
+    return this.usersRepository.deleteUserById(id);
   }
 }

@@ -40,14 +40,14 @@ export class PostQueryRepository {
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
 
-    const getCountBlogs = await this.postsModel.countDocuments({
+    const getCountPosts = await this.postsModel.countDocuments({
       name: { $regex: searchNameTerm, $options: 'i' },
     });
 
     return paginationResult(
       pageNumber,
       pageSize,
-      getCountBlogs,
+      getCountPosts,
       findAndSortedPosts,
     );
   }
@@ -73,7 +73,7 @@ export class PostQueryRepository {
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
 
-    const getCountBlogs = await this.postsModel.countDocuments({
+    const getCountPosts = await this.postsModel.countDocuments({
       blogId: blogId,
       name: { $regex: searchNameTerm, $options: 'i' },
     });
@@ -81,7 +81,7 @@ export class PostQueryRepository {
     return paginationResult(
       pageNumber,
       pageSize,
-      getCountBlogs,
+      getCountPosts,
       findAndSortedPosts,
     );
   }

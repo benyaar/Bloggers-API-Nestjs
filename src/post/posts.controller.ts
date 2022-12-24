@@ -47,7 +47,7 @@ export class PostsController {
     const findPostById = await this.postQueryRepository.findPostById(id);
     if (!findPostById) throw new NotFoundException([]);
 
-    return this.postQueryRepository.findPostById(id);
+    return findPostById;
   }
   @Put(':id')
   @HttpCode(204)

@@ -3,48 +3,45 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  NotFoundException,
   Param,
   Post,
-  Put,
   Query,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/creaet-user.dto';
+import { InputUserDto } from './dto/input-user.dto';
+import { QueryUsersRepository } from './query-users.repository';
+import { PaginationInputDTO } from '../helpers/dto/helpers.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(public usersService: UsersService) {}
+  constructor(
+    public usersService: UsersService,
+    public queryUserRepository: QueryUsersRepository,
+  ) {}
+
+  @Post()
+  async createUser(@Body() inputUserDto: InputUserDto) {
+    return this.usersService.createUser(inputUserDto);
+  }
   @Get()
   //getUsers(@Query('term') term: string ) - или так getUsers(@Query() query: Type )
-  getUsers(@Query() query: { term: string }) {
-    // return [
-    //   { id: 1, name: 'Artur' },
-    //   { id: 2, name: 'Andrey' },
-    // ].filter((e) => e.name.indexOf(query.term) > -1);
-    return query;
+  async findAllUsers(@Query() paginationInputDTO: PaginationInputDTO) {
+    return this.queryUserRepository.findAllUsers(paginationInputDTO);
   }
-  @Post()
-  async createUser(@Body() userInputModel: CreateUserDto) {
-    const newCreatedUser = await this.usersService.createUser(userInputModel);
-    return {
-      id: newCreatedUser.id,
-      title: newCreatedUser.title,
-      description: newCreatedUser.description,
-    };
+  @Get(':id')
+  async findUserById(@Param('id') id: string) {
+    const findUserById = await this.queryUserRepository.findUserById(id);
+    if (!findUserById) throw new NotFoundException([]);
+    return findUserById;
   }
   @Delete(':id')
-  deleteUser(@Param('id') id: string) {
-    return [{ id: 1 }, { id: 2 }].find((e) => {
-      e.id === +id;
-    });
-  }
-
-  @Put(':id')
-  updateUser(@Param('id') id: string, @Body() inputModel: CreateUserDto) {
-    return {
-      id: inputModel.id,
-      title: inputModel.title,
-    };
+  @HttpCode(204)
+  async deleteUserById(@Param('id') id: string) {
+    const findUserById = await this.queryUserRepository.findUserById(id);
+    if (!findUserById) throw new NotFoundException([]);
+    return this.usersService.deleteUserById(id);
   }
 }
