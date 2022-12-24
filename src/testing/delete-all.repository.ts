@@ -19,6 +19,7 @@ export class DeleteAllRepository {
   async deleteAll() {
     await this.blogsModel.deleteMany();
     await this.postsModel.deleteMany();
+    await this.usersModel.deleteMany();
     return;
   }
 }
