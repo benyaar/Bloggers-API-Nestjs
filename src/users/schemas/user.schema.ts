@@ -12,6 +12,8 @@ export class User {
   @Prop()
   email: string;
   @Prop()
+  passwordHash: string;
+  @Prop()
   createdAt: Date;
 }
 
@@ -22,6 +24,7 @@ export class UserViewType {
     public id: string,
     public login: string,
     public email: string,
+    public passwordHash: string,
     public createdAt: Date,
   ) {}
 }

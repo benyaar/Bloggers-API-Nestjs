@@ -5,6 +5,7 @@ import {
   CommentDBModalType,
 } from '../schema/comments.schema';
 import { Model } from 'mongoose';
+import { UpdateCommentDto } from '../dto/update-comment.dto';
 
 export class CommentsRepository {
   constructor(
@@ -13,5 +14,14 @@ export class CommentsRepository {
   ) {}
   async saveNewComment(newComment: CommentDBModalType) {
     return this.commentsModel.insertMany(newComment);
+  }
+  async updateCommentById(id: string, updateCommentDto: UpdateCommentDto) {
+    return this.commentsModel.updateOne(
+      { id },
+      { $set: { content: updateCommentDto.content } },
+    );
+  }
+  async deleteCommentById(id: string) {
+    return this.commentsModel.deleteOne({ id });
   }
 }

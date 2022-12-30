@@ -23,4 +23,7 @@ export class CommentsQueryRepository {
   ) {
     return pagination(parentId, paginationInputDTO, this.commentsModel);
   }
+  async findCommentById(id: string) {
+    return this.commentsModel.findOne({ id }, options);
+  }
 }

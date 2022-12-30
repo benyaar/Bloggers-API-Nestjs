@@ -1,8 +1,8 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { User, UsersDocument } from './schemas/user.schema';
+import { User, UsersDocument } from '../schemas/user.schema';
 import { Model } from 'mongoose';
-import { PaginationUserInputDTO } from '../helpers/dto/helpers.dto';
-import { paginationResult } from '../helpers/pagination';
+import { PaginationUserInputDTO } from '../../helpers/dto/helpers.dto';
+import { paginationResult } from '../../helpers/pagination';
 
 const options = {
   _id: 0,
@@ -12,7 +12,7 @@ const options = {
   __v: 0,
 };
 
-export class QueryUsersRepository {
+export class UsersQueryRepository {
   constructor(
     @InjectModel(User.name) private readonly usersModel: Model<UsersDocument>,
   ) {}
@@ -57,5 +57,16 @@ export class QueryUsersRepository {
   }
   async findUserById(id: string) {
     return this.usersModel.findOne({ id });
+  }
+  async findUserByLogin(login: string) {
+    return this.usersModel.findOne({ login });
+  }
+  async findUserByEmail(email: string) {
+    return this.usersModel.findOne({ email });
+  }
+  async findUserByLoginOrEmail(loginOrEmail: string) {
+    return this.usersModel.findOne({
+      $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
+    });
   }
 }

@@ -10,19 +10,19 @@ import {
   Query,
 } from '@nestjs/common';
 
-import { UsersService } from './users.service';
-import { InputUserDto } from './dto/input-user.dto';
-import { QueryUsersRepository } from './query-users.repository';
+import { UsersService } from '../application/users.service';
+import { InputUserDto } from '../dto/input-user.dto';
+import { UsersQueryRepository } from '../repository/users.query-repository';
 import {
   PaginationInputDTO,
   PaginationUserInputDTO,
-} from '../helpers/dto/helpers.dto';
+} from '../../helpers/dto/helpers.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(
     public usersService: UsersService,
-    public queryUserRepository: QueryUsersRepository,
+    public queryUserRepository: UsersQueryRepository,
   ) {}
 
   @Post()
