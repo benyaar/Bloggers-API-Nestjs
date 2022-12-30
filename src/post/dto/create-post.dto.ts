@@ -1,6 +1,6 @@
 import { Length } from 'class-validator';
 
-export class InputPostDTO {
+export class CreatePostDto {
   @Length(1, 30)
   title: string;
   @Length(1, 1000)

@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
-
-export type BlogsDocument = HydratedDocument<Blog>;
+import { HydratedDocument, Model, Types } from 'mongoose';
+import { BlogInputDTO } from '../dto/input-blog.dto';
+import * as mongoose from 'mongoose';
+import ObjectId = mongoose.Types.ObjectId;
 
 @Schema()
 export class Blog {
@@ -15,18 +16,38 @@ export class Blog {
   websiteUrl: string;
   @Prop()
   createdAt: Date;
-  // updateName(name: string) {
-  //   //business logic
-  //   this.name = name;
-  // }
+
+  checkName(name) {
+    return `${name} + hello `;
+  }
+
+  static createNewBlog(blog: BlogInputDTO, BlogModel: BlogsModelType) {
+    const newBlog = new BlogModel(blog);
+    newBlog.id = new ObjectId();
+    newBlog.createdAt = new Date();
+    return newBlog;
+  }
 }
 
 export const BlogSchema = SchemaFactory.createForClass(Blog);
-// BlogSchema.methods = {
-//   updateName: Blog.prototype.updateName,
-// };
+BlogSchema.methods = {
+  checkName: Blog.prototype.checkName,
+};
+BlogSchema.statics = {
+  createNewBlog: Blog.createNewBlog,
+};
 
-export class BlogsViewType {
+export type BlogModelStaticType = {
+  createNewBlog: (
+    blog: BlogInputDTO,
+    BlogModel: BlogsModelType,
+  ) => BlogsDocument;
+};
+export type BlogsDocument = HydratedDocument<Blog>;
+
+export type BlogsModelType = Model<BlogsDocument> & BlogModelStaticType;
+
+export class BlogsViewModel {
   constructor(
     public id: string,
     public name: string,
@@ -35,17 +56,3 @@ export class BlogsViewType {
     public createdAt: Date,
   ) {}
 }
-
-// export class BlogDBType extends BlogsViewType {
-//   _id: ObjectId;
-//   constructor(
-//     id: string,
-//     name: string,
-//     description: string,
-//     websiteUrl: string,
-//     createdAt: Date,
-//   ) {
-//     super(id, name, description, websiteUrl, createdAt);
-//     this._id = id;
-//   }
-// }

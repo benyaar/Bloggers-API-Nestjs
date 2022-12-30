@@ -29,6 +29,8 @@ export class Post {
   @Prop()
   blogId: string;
   @Prop()
+  parentId: string;
+  @Prop()
   blogName: string;
   @Prop()
   createdAt: Date;
@@ -37,6 +39,25 @@ export class Post {
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
+
+export class PostDBType {
+  constructor(
+    public id: string,
+    public title: string,
+    public shortDescription: string,
+    public content: string,
+    public blogId: string,
+    public parentId: string,
+    public blogName: string,
+    public createdAt: Date,
+    public extendedLikesInfo: {
+      likesCount: number;
+      dislikesCount: number;
+      myStatus: string;
+      newestLikes: [];
+    },
+  ) {}
+}
 
 export class PostViewType {
   constructor(
