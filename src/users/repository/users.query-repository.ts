@@ -56,13 +56,13 @@ export class UsersQueryRepository {
     );
   }
   async findUserById(id: string) {
-    return this.usersModel.findOne({ id });
+    return this.usersModel.findOne({ id }, options);
   }
   async findUserByLogin(login: string) {
-    return this.usersModel.findOne({ login });
+    return this.usersModel.findOne({ login }, options);
   }
   async findUserByEmail(email: string) {
-    return this.usersModel.findOne({ email });
+    return this.usersModel.findOne({ email }, options);
   }
   async findUserByLoginOrEmail(loginOrEmail: string) {
     return this.usersModel.findOne({

@@ -9,12 +9,19 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { PostsService } from '../application/posts.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { PostQueryRepository } from '../repository/post.query-repository';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { CreateCommentDto } from '../dto/create-comment.dto';
+import { User } from '../../auth/decorator/request.decorator';
+import { UserViewType } from '../../users/schemas/user.schema';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { Cookies } from '../../auth/decorator/cookies.decorator';
+import { Request } from 'express';
 
 @Controller('posts')
 export class PostsController {
@@ -56,12 +63,22 @@ export class PostsController {
     return this.postsService.deletePostById(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(':id/comments')
   async createCommentForPost(
     @Param('id') id: string,
     @Body() createCommentDto: CreateCommentDto,
+    @User() user: UserViewType,
+    @Cookies('refreshToken') refreshToken: any,
+    @Req() request: Request,
   ) {
-    return this.postsService.createNewCommentByPostId(id, createCommentDto);
+    console.log(refreshToken);
+    console.log(request.cookies);
+    return this.postsService.createNewCommentByPostId(
+      id,
+      createCommentDto,
+      user,
+    );
   }
   @Get(':id/comments')
   async findAllCommentsForPost(

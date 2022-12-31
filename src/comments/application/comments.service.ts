@@ -6,6 +6,7 @@ import * as mongoose from 'mongoose';
 import ObjectId = mongoose.Types.ObjectId;
 import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { CommentsQueryRepository } from '../repository/comments.query-repository';
+import { UserViewType } from '../../users/schemas/user.schema';
 
 @Injectable()
 export class CommentsService {
@@ -13,12 +14,16 @@ export class CommentsService {
     private commentsRepository: CommentsRepository,
     private commentsQueryRepository: CommentsQueryRepository,
   ) {}
-  async createNewComment(id: string, createCommentDto: CreateCommentDto) {
+  async createNewComment(
+    id: string,
+    createCommentDto: CreateCommentDto,
+    user: UserViewType,
+  ) {
     const newComment: CommentDBModalType = new CommentDBModalType(
       new ObjectId().toString(),
       createCommentDto.content,
-      'null',
-      'null',
+      user.id,
+      user.login,
       new Date(),
       id,
       {

@@ -8,21 +8,30 @@ import { PostsModule } from './post/posts.module';
 import { DeleteAllModule } from './testing/delete-all.module';
 import { AuthModule } from './auth/auth.module';
 import { CommentsModule } from './comments/comments.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     UsersModule,
     BlogsModule,
     PostsModule,
     DeleteAllModule,
-    // MongooseModule.forRoot(
-    //   'mongodb+srv://admin:admin@backapi.wojaaxk.mongodb.net/?retryWrites=true&w=majority',
-    // ),
     AuthModule,
-    MongooseModule.forRoot(
-      'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1',
-    ),
+    MongooseModule.forRoot(process.env.DATABASE_LOCAL_URL),
     CommentsModule,
+    MailerModule.forRoot({
+      transport: {
+        service: process.env.NODEMAILER_SERVICE,
+        auth: {
+          user: process.env.MAIL_USER, // generated ethereal user
+          pass: process.env.MAIL_PASS, // generated ethereal password
+        },
+      },
+    }),
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

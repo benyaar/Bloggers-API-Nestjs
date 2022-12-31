@@ -9,6 +9,8 @@ import { CreateCommentDto } from '../dto/create-comment.dto';
 import { CommentsService } from '../../comments/application/comments.service';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { CommentsQueryRepository } from '../../comments/repository/comments.query-repository';
+import { JwtAccessDto } from '../../auth/dto/jwt-access.dto';
+import { UserViewType } from '../../users/schemas/user.schema';
 
 @Injectable()
 export class PostsService {
@@ -60,10 +62,11 @@ export class PostsService {
   async createNewCommentByPostId(
     id: string,
     createCommentDto: CreateCommentDto,
+    user: UserViewType,
   ) {
     const findPostById = await this.postQueryRepository.findPostById(id);
     if (!findPostById) throw new NotFoundException([]);
-    return this.commentsService.createNewComment(id, createCommentDto);
+    return this.commentsService.createNewComment(id, createCommentDto, user);
   }
   async findAllCommentsForPost(
     id: string,

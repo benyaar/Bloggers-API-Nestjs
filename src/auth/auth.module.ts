@@ -13,8 +13,7 @@ import { BasicStrategy } from './strategies/basic.strategy';
     UsersModule,
     PassportModule,
     JwtModule.register({
-      secret: '123',
-      signOptions: { expiresIn: '100s' },
+      secret: `${process.env.JWT_SECRET_KEY}`,
     }),
   ],
   controllers: [AuthController],
