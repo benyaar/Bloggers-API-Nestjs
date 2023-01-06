@@ -14,7 +14,9 @@ import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath: '.env',
+    }),
     UsersModule,
     BlogsModule,
     PostsModule,
