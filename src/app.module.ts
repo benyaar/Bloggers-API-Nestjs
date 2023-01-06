@@ -8,7 +8,7 @@ import { PostsModule } from './post/posts.module';
 import { DeleteAllModule } from './testing/delete-all.module';
 import { AuthModule } from './auth/auth.module';
 import { CommentsModule } from './comments/comments.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from './email/email.module';
 
@@ -20,7 +20,7 @@ import { EmailModule } from './email/email.module';
     PostsModule,
     DeleteAllModule,
     AuthModule,
-    MongooseModule.forRoot(process.env.DATABASE_LOCAL_URL),
+    MongooseModule.forRoot(process.env.DATABASE_NETWORK_URL),
     CommentsModule,
     MailerModule.forRoot({
       transport: {
