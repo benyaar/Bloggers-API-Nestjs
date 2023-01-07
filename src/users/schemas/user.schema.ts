@@ -3,6 +3,15 @@ import { HydratedDocument } from 'mongoose';
 
 export type UsersDocument = HydratedDocument<User>;
 
+class EmailConfirmation {
+  @Prop()
+  confirmationCode: string;
+  @Prop()
+  expirationDate: Date;
+  @Prop()
+  isConfirmed: boolean;
+}
+
 @Schema()
 export class User {
   @Prop()
@@ -15,6 +24,8 @@ export class User {
   passwordHash: string;
   @Prop()
   createdAt: Date;
+  @Prop()
+  emailConfirmation: EmailConfirmation;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -26,5 +37,10 @@ export class UserViewType {
     public email: string,
     public passwordHash: string,
     public createdAt: Date,
+    public emailConfirmation: {
+      confirmationCode: string;
+      expirationDate: Date;
+      isConfirmed: boolean;
+    },
   ) {}
 }

@@ -29,10 +29,10 @@ import { EmailModule } from './email/email.module';
     CommentsModule,
     MailerModule.forRoot({
       transport: {
-        service: process.env.NODEMAILER_SERVICE || 'gmail',
+        service: 'gmail',
         auth: {
-          user: process.env.MAIL_USER || 'apitestblogger@gmail.com', // generated ethereal user
-          pass: process.env.MAIL_PASS || 'lfommghhiouvpevu', // generated ethereal password
+          user: 'apitestblogger@gmail.com', // generated ethereal user
+          pass: 'lfommghhiouvpevu', // generated ethereal password
         },
       },
     }),
