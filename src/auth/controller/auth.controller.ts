@@ -34,4 +34,11 @@ export class AuthController {
     });
     return JwtPair;
   }
+
+  @Post('registration-email-resending')
+  @HttpCode(204)
+  async emailResending(@Body('email') email: string) {
+    await this.authService.emailResending(email);
+    return;
+  }
 }

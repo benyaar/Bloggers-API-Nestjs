@@ -15,4 +15,7 @@ export class UsersRepository {
   async deleteUserById(id: string) {
     return this.usersModel.deleteOne({ id });
   }
+  async saveUser(user: UsersDocument) {
+    return user.save();
+  }
 }

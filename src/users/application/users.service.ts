@@ -1,6 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UsersRepository } from '../repository/users.repository';
-import { UserViewType } from '../schemas/user.schema';
+import {
+  EmailConfirmation,
+  UsersDocument,
+  UserViewType,
+} from '../schemas/user.schema';
 import { InputUserDto } from '../dto/input-user.dto';
 import * as mongoose from 'mongoose';
 import ObjectId = mongoose.Types.ObjectId;
@@ -67,5 +71,28 @@ export class UsersService {
   }
   async findUserByLoginOrEmail(loginOrEmail: string) {
     return this.usersQueryRepository.findUserByLoginOrEmail(loginOrEmail);
+  }
+
+  async updateUserEmailConfirm(user: UsersDocument) {
+    const code = uuidv4();
+
+    const newEmailConfirmation: EmailConfirmation = {
+      confirmationCode: code,
+      expirationDate: add(new Date(), {
+        hours: 1,
+        minutes: 3,
+      }),
+      isConfirmed: false,
+    };
+    user.emailConfirmation = newEmailConfirmation;
+    await this.usersRepository.saveUser(user);
+
+    const bodyTextMessage = `https://somesite.com/confirm-email?code=${user.emailConfirmation.confirmationCode}`;
+    await this.emailService.sendEmail(
+      user.email,
+      'Confirm email',
+      bodyTextMessage,
+    );
+    return;
   }
 }

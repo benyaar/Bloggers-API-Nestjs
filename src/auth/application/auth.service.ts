@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 import { UsersService } from '../../users/application/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -31,5 +35,18 @@ export class AuthService {
       accessToken: this.jwtService.sign(payload, { expiresIn: '200s' }),
       refreshToken: this.jwtService.sign(payload, { expiresIn: '500s' }),
     };
+  }
+  async emailResending(email: string) {
+    const findUserByLoginOrEmail =
+      await this.usersService.findUserByLoginOrEmail(email);
+    if (
+      findUserByLoginOrEmail === null ||
+      !findUserByLoginOrEmail ||
+      findUserByLoginOrEmail.emailConfirmation.isConfirmed
+    ) {
+      throw new NotFoundException([]);
+    }
+    await this.usersService.updateUserEmailConfirm(findUserByLoginOrEmail);
+    return;
   }
 }

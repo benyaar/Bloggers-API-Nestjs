@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type UsersDocument = HydratedDocument<User>;
 
-class EmailConfirmation {
+export class EmailConfirmation {
   @Prop()
   confirmationCode: string;
   @Prop()
