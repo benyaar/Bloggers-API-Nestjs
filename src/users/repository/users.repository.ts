@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UsersDocument, UserViewType } from '../schemas/user.schema';
+import {
+  EmailConfirmation,
+  User,
+  UsersDocument,
+  UserViewType,
+} from '../schemas/user.schema';
 import {
   RecoveryCode,
   RecoveryCodeDocument,
@@ -21,10 +26,29 @@ export class UsersRepository {
   async deleteUserById(id: string) {
     return this.usersModel.deleteOne({ id });
   }
-  async saveUser(user: UsersDocument) {
-    return user.save();
-  }
   async passwordRecovery(code: RecoveryCode) {
     return this.recoveryCode.insertMany(code);
+  }
+
+  async updateConfirmCode(user: UsersDocument) {
+    return this.usersModel.updateOne(
+      { id: user.id },
+      { $set: { 'emailConfirmation.isConfirmed': true } },
+    );
+  }
+  async updateUserHash(user: UsersDocument, hash: string) {
+    return this.usersModel.updateOne(
+      { id: user.id },
+      { $set: { passwordHash: hash } },
+    );
+  }
+  async updateEmailConfirmation(
+    user: UsersDocument,
+    newEmailConfirmation: EmailConfirmation,
+  ) {
+    return this.usersModel.updateOne(
+      { id: user.id },
+      { $set: { email: newEmailConfirmation } },
+    );
   }
 }

@@ -90,8 +90,11 @@ export class UsersService {
       }),
       isConfirmed: false,
     };
-    user.emailConfirmation = newEmailConfirmation;
-    await this.usersRepository.saveUser(user);
+
+    await this.usersRepository.updateEmailConfirmation(
+      user,
+      newEmailConfirmation,
+    );
 
     const bodyTextMessage = `https://somesite.com/confirm-email?code=${user.emailConfirmation.confirmationCode}`;
     await this.emailService.sendEmail(
@@ -107,8 +110,8 @@ export class UsersService {
     if (!findUserByConfirmCode) throw new BadRequestException([]);
     if (findUserByConfirmCode.emailConfirmation.isConfirmed)
       throw new BadRequestException([]);
-    findUserByConfirmCode.emailConfirmation.isConfirmed = true;
-    return await this.usersRepository.saveUser(findUserByConfirmCode);
+
+    return this.usersRepository.updateConfirmCode(findUserByConfirmCode);
   }
 
   async passwordRecovery(email: string) {
@@ -144,7 +147,7 @@ export class UsersService {
     );
     if (!findUserByEmail) throw new BadRequestException([]);
     findUserByEmail.passwordHash = hash;
-    await this.usersRepository.saveUser(findUserByEmail);
+    await this.usersRepository.updateUserHash(findUserByEmail, hash);
     return;
   }
 }
