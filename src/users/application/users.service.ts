@@ -107,9 +107,14 @@ export class UsersService {
   async findUserByConfirmCode(code: string) {
     const findUserByConfirmCode =
       await this.usersQueryRepository.findUserByConfirmCode(code);
-    if (!findUserByConfirmCode) throw new BadRequestException([]);
+    if (!findUserByConfirmCode)
+      throw new BadRequestException([
+        { message: 'not found user by code', field: 'code' },
+      ]);
     if (findUserByConfirmCode.emailConfirmation.isConfirmed)
-      throw new BadRequestException([]);
+      throw new BadRequestException([
+        { message: 'code is confirmed', field: 'code' },
+      ]);
 
     return this.usersRepository.updateConfirmCode(findUserByConfirmCode);
   }

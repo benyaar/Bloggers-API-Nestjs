@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -45,7 +46,9 @@ export class AuthService {
       !findUserByLoginOrEmail ||
       findUserByLoginOrEmail.emailConfirmation.isConfirmed
     ) {
-      throw new NotFoundException([]);
+      throw new BadRequestException([
+        { message: 'something wrong', field: 'email' },
+      ]);
     }
     await this.usersService.updateUserEmailConfirm(findUserByLoginOrEmail);
     return;
