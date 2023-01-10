@@ -15,6 +15,12 @@ import { BasicStrategy } from './strategies/basic.strategy';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Attempt, AttemptSchema } from './schemas/attempts.schema';
 import { AttemptsMiddleware } from './middleware/attempt.middleware';
+import { JwtService } from './application/jwt.service';
+import {
+  TokenBlackList,
+  TokenBlackListSchema,
+} from './schemas/token-blacklist.schema';
+import { AuthRepository } from './repository/auth.repository';
 
 @Module({
   imports: [
@@ -23,10 +29,20 @@ import { AttemptsMiddleware } from './middleware/attempt.middleware';
     JwtModule.register({
       secret: `${process.env.JWT_SECRET_KEY}`,
     }),
-    MongooseModule.forFeature([{ name: Attempt.name, schema: AttemptSchema }]),
+    MongooseModule.forFeature([
+      { name: Attempt.name, schema: AttemptSchema },
+      { name: TokenBlackList.name, schema: TokenBlackListSchema },
+    ]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, BasicStrategy],
+  providers: [
+    AuthService,
+    AuthRepository,
+    LocalStrategy,
+    JwtStrategy,
+    BasicStrategy,
+    JwtService,
+  ],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

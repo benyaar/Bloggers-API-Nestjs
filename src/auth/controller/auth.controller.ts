@@ -11,6 +11,7 @@ import { RegistrationDto } from '../dto/registration.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { User } from '../decorator/request.decorator';
 import { Response } from 'express';
+import { CreateNewPasswordDto } from '../dto/create-new-password.dto';
 
 //
 @Controller('auth')
@@ -41,4 +42,25 @@ export class AuthController {
     await this.authService.emailResending(email);
     return;
   }
+
+  @Post('registration-confirmation')
+  @HttpCode(204)
+  async registrationConfirm(@Body('code') code: string) {
+    return this.authService.registrationConfirm(code);
+  }
+
+  @Post('password-recovery')
+  @HttpCode(204)
+  async passwordRecovery(@Body('email') email: string) {
+    return this.authService.passwordRecovery(email);
+  }
+
+  @Post('new-password')
+  @HttpCode(204)
+  async createNewPassword(@Body() newPasswordDto: CreateNewPasswordDto) {
+    return this.authService.createNewPassword(newPasswordDto);
+  }
+
+  // @Post('refresh-token')
+  // async updateRefreshToken();
 }

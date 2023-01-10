@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UsersRepository } from '../repository/users.repository';
 import {
   EmailConfirmation,
@@ -13,6 +17,8 @@ import { UsersQueryRepository } from '../repository/users.query-repository';
 import { add } from 'date-fns';
 import { v4 as uuidv4 } from 'uuid';
 import { EmailService } from '../../email/email.service';
+import { CreateNewPasswordDto } from '../../auth/dto/create-new-password.dto';
+import { RecoveryCodeType } from '../schemas/recovery-code.schema';
 
 @Injectable()
 export class UsersService {
@@ -93,6 +99,52 @@ export class UsersService {
       'Confirm email',
       bodyTextMessage,
     );
+    return;
+  }
+  async findUserByConfirmCode(code: string) {
+    const findUserByConfirmCode =
+      await this.usersQueryRepository.findUserByConfirmCode(code);
+    if (!findUserByConfirmCode) throw new BadRequestException([]);
+    if (findUserByConfirmCode.emailConfirmation.isConfirmed)
+      throw new BadRequestException([]);
+    findUserByConfirmCode.emailConfirmation.isConfirmed = true;
+    return await this.usersRepository.saveUser(findUserByConfirmCode);
+  }
+
+  async passwordRecovery(email: string) {
+    const findUserByEmail = await this.usersQueryRepository.findUserByEmail(
+      email,
+    );
+    if (!findUserByEmail) throw new NotFoundException([]);
+
+    const recoveryCode: RecoveryCodeType = {
+      email: email,
+      recoveryCode: uuidv4(),
+    };
+    await this.usersRepository.passwordRecovery(recoveryCode);
+    const bodyTextMessage = `https://somesite.com/password-recovery?recoveryCode=${recoveryCode.recoveryCode}`;
+    await this.emailService.sendEmail(
+      email,
+      'Recovery password',
+      bodyTextMessage,
+    );
+    return;
+  }
+
+  async createNewPassword(password: CreateNewPasswordDto) {
+    const salt = await bcrypt.genSalt();
+    const hash = await bcrypt.hash(password.newPassword, salt);
+
+    const findRecoveryCode = await this.usersQueryRepository.findRecoveryCode(
+      password.recoveryCode,
+    );
+    if (!findRecoveryCode) throw new BadRequestException([]);
+    const findUserByEmail = await this.usersQueryRepository.findUserByEmail(
+      findRecoveryCode.email,
+    );
+    if (!findUserByEmail) throw new BadRequestException([]);
+    findUserByEmail.passwordHash = hash;
+    await this.usersRepository.saveUser(findUserByEmail);
     return;
   }
 }

@@ -8,6 +8,7 @@ import { UsersService } from '../../users/application/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { RegistrationDto } from '../dto/registration.dto';
 import * as bcrypt from 'bcrypt';
+import { CreateNewPasswordDto } from '../dto/create-new-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -48,5 +49,17 @@ export class AuthService {
     }
     await this.usersService.updateUserEmailConfirm(findUserByLoginOrEmail);
     return;
+  }
+
+  async registrationConfirm(code: string) {
+    return this.usersService.findUserByConfirmCode(code);
+  }
+
+  async passwordRecovery(email: string) {
+    return this.usersService.passwordRecovery(email);
+  }
+
+  async createNewPassword(password: CreateNewPasswordDto) {
+    return this.usersService.createNewPassword(password);
   }
 }

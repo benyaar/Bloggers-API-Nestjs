@@ -3,6 +3,10 @@ import { User, UsersDocument } from '../schemas/user.schema';
 import { Model } from 'mongoose';
 import { PaginationUserInputDTO } from '../../helpers/dto/helpers.dto';
 import { paginationResult } from '../../helpers/pagination';
+import {
+  RecoveryCode,
+  RecoveryCodeDocument,
+} from '../schemas/recovery-code.schema';
 
 const options = {
   _id: 0,
@@ -15,6 +19,8 @@ const options = {
 export class UsersQueryRepository {
   constructor(
     @InjectModel(User.name) private readonly usersModel: Model<UsersDocument>,
+    @InjectModel(RecoveryCode.name)
+    private readonly recoveryCodeModel: Model<RecoveryCodeDocument>,
   ) {}
   async findAllUsers(paginationInputDTO: PaginationUserInputDTO) {
     const searchLoginTerm: string = paginationInputDTO.searchLoginTerm;
@@ -68,5 +74,13 @@ export class UsersQueryRepository {
     return this.usersModel.findOne({
       $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
     });
+  }
+  async findUserByConfirmCode(code: string) {
+    return this.usersModel.findOne({
+      'emailConfirmation.confirmationCode': code,
+    });
+  }
+  async findRecoveryCode(code: string) {
+    return this.recoveryCodeModel.findOne({ recoveryCode: code });
   }
 }
