@@ -48,7 +48,7 @@ export class UsersRepository {
   ) {
     return this.usersModel.updateOne(
       { id: user.id },
-      { $set: { email: newEmailConfirmation } },
+      { $set: { emailConfirmation: newEmailConfirmation } },
     );
   }
 }
