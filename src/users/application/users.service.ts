@@ -96,7 +96,7 @@ export class UsersService {
       newEmailConfirmation,
     );
 
-    const bodyTextMessage = `https://somesite.com/confirm-email?code=${user.emailConfirmation.confirmationCode}`;
+    const bodyTextMessage = `https://somesite.com/confirm-email?code=${newEmailConfirmation.confirmationCode}`;
     await this.emailService.sendEmail(
       user.email,
       'Confirm email',
