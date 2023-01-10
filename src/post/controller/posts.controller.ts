@@ -22,6 +22,7 @@ import { UserViewType } from '../../users/schemas/user.schema';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Cookies } from '../../auth/decorator/cookies.decorator';
 import { Request } from 'express';
+import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 
 @Controller('posts')
 export class PostsController {
@@ -30,6 +31,7 @@ export class PostsController {
     public postQueryRepository: PostQueryRepository,
   ) {}
 
+  @UseGuards(BasicAuthGuard)
   @Post()
   async createPost(@Body() createPostDto: CreatePostDto) {
     return this.postsService.createNewPost(createPostDto);
@@ -48,6 +50,7 @@ export class PostsController {
     return findPostById;
   }
 
+  @UseGuards(BasicAuthGuard)
   @Put(':id')
   @HttpCode(204)
   async updatePostById(
@@ -57,6 +60,7 @@ export class PostsController {
     return this.postsService.updatePostById(id, createPostDto);
   }
 
+  @UseGuards(BasicAuthGuard)
   @Delete(':id')
   @HttpCode(204)
   async deletePostById(@Param('id') id: string) {
