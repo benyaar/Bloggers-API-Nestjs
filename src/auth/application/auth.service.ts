@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 
@@ -10,12 +9,17 @@ import { JwtService } from '@nestjs/jwt';
 import { RegistrationDto } from '../dto/registration.dto';
 import * as bcrypt from 'bcrypt';
 import { CreateNewPasswordDto } from '../dto/create-new-password.dto';
+import { DevicesService } from '../../devices/application/devices.service';
+import * as mongoose from 'mongoose';
+import ObjectId = mongoose.Types.ObjectId;
+import { DeviceType } from '../../devices/schemas/devices.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly devicesService: DevicesService,
   ) {}
   async registration(registrationDto: RegistrationDto) {
     return this.usersService.createUser(registrationDto);
@@ -31,12 +35,23 @@ export class AuthService {
     return findUserByLoginOrEmail;
   }
 
-  async login(user: any) {
-    const payload = { userId: user.id };
-    return {
+  async login(user: any, ip: string, title: string) {
+    const deviceId = new ObjectId().toString();
+    const payload = { userId: user.id, deviceId: deviceId };
+
+    const jwtPair = {
       accessToken: this.jwtService.sign(payload, { expiresIn: '200s' }),
       refreshToken: this.jwtService.sign(payload, { expiresIn: '500s' }),
     };
+    const userSession = new DeviceType(
+      ip,
+      title,
+      new Date(),
+      deviceId,
+      user.id,
+    );
+    await this.devicesService.createNewUserSession(userSession);
+    return jwtPair;
   }
   async emailResending(email: string) {
     const findUserByLoginOrEmail =

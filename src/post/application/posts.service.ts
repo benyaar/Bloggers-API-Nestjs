@@ -9,8 +9,9 @@ import { CreateCommentDto } from '../dto/create-comment.dto';
 import { CommentsService } from '../../comments/application/comments.service';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { CommentsQueryRepository } from '../../comments/repository/comments.query-repository';
-import { JwtAccessDto } from '../../auth/dto/jwt-access.dto';
 import { UserViewType } from '../../users/schemas/user.schema';
+import { LikeStatusType } from '../schemas/like-status.schema';
+import { LikeStatusDto } from '../dto/like-status.dto';
 
 @Injectable()
 export class PostsService {
@@ -76,5 +77,23 @@ export class PostsService {
     const findPostById = await this.postQueryRepository.findPostById(id);
     if (!findPostById) throw new NotFoundException([]);
     return this.commentsQueryRepository.findAllComments(id, paginationInputDTO);
+  }
+  async updateLikeStatus(
+    user: UserViewType,
+    postId: string,
+    likeStatus: string,
+  ) {
+    const findPostById = await this.postQueryRepository.findPostById(postId);
+    if (!findPostById) throw new NotFoundException([]);
+
+    const likeStatusModel = new LikeStatusType(
+      postId,
+      user.id,
+      user.login,
+      likeStatus,
+      new Date(),
+    );
+
+    return this.postsRepository.updateLikeStatus(likeStatusModel);
   }
 }

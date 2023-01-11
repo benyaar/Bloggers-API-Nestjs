@@ -21,11 +21,13 @@ import {
   TokenBlackListSchema,
 } from './schemas/token-blacklist.schema';
 import { AuthRepository } from './repository/auth.repository';
+import { DeviceModule } from '../devices/device.module';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
+    DeviceModule,
     JwtModule.register({
       secret: `${process.env.JWT_SECRET_KEY}`,
     }),

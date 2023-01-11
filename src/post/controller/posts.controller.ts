@@ -23,6 +23,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Cookies } from '../../auth/decorator/cookies.decorator';
 import { Request } from 'express';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
+import { LikeStatusDto } from '../dto/like-status.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -90,5 +91,19 @@ export class PostsController {
     @Query() paginationInputDTO: PaginationInputDTO,
   ) {
     return this.postsService.findAllCommentsForPost(id, paginationInputDTO);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/like-status')
+  async updateLikeStatus(
+    @User() user,
+    @Param('id') id: string,
+    @Body() likeStatusDto: LikeStatusDto,
+  ) {
+    return this.postsService.updateLikeStatus(
+      user,
+      id,
+      likeStatusDto.likeStatus,
+    );
   }
 }

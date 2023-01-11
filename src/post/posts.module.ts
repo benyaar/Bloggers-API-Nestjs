@@ -8,8 +8,8 @@ import { PostsService } from './application/posts.service';
 import { PostsRepository } from './repository/posts.repository';
 import { Blog, BlogSchema } from '../blogs/schemas/blogs.schema';
 import { PostQueryRepository } from './repository/post.query-repository';
-import { BlogsModule } from '../blogs/blogs.module';
 import { CommentsModule } from '../comments/comments.module';
+import { LikeStatus, LikeStatusSchema } from './schemas/like-status.schema';
 
 @Module({
   imports: [
@@ -17,6 +17,7 @@ import { CommentsModule } from '../comments/comments.module';
     MongooseModule.forFeature([
       { name: Post.name, schema: PostSchema },
       { name: Blog.name, schema: BlogSchema },
+      { name: LikeStatus.name, schema: LikeStatusSchema },
     ]),
   ],
   controllers: [PostsController],

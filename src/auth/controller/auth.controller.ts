@@ -5,12 +5,13 @@ import {
   UseGuards,
   Res,
   HttpCode,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { RegistrationDto } from '../dto/registration.dto';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { User } from '../decorator/request.decorator';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { CreateNewPasswordDto } from '../dto/create-new-password.dto';
 
 //
@@ -27,8 +28,14 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   @HttpCode(200)
-  async login(@User() user, @Res({ passthrough: true }) response: Response) {
-    const JwtPair = await this.authService.login(user);
+  async login(
+    @User() user,
+    @Req() req: Request,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const ip = req.ip;
+    const title = req.headers['user-agent'] || 'browser not found';
+    const JwtPair = await this.authService.login(user, ip, title);
     response.cookie('refreshToken', JwtPair.refreshToken, {
       httpOnly: true,
       secure: true,
