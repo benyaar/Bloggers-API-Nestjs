@@ -47,7 +47,8 @@ export class PostsService {
       },
     );
     await this.postsRepository.createNewPost(newPost);
-    return newPost;
+    const { parentId, ...newPostcopy } = newPost;
+    return newPostcopy;
   }
   async updatePostById(id: string, inputPostDTO: CreatePostDto) {
     const findPostById = await this.postQueryRepository.findPostById(id);
