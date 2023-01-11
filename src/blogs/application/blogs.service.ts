@@ -19,8 +19,8 @@ export class BlogsService {
     private postsService: PostsService,
     @InjectModel(Blog.name)
     private BlogModel: BlogsModelType,
-    private queryBlogRepository: BlogQueryRepository,
-    public queryPostRepository: PostQueryRepository,
+    private blogQueryRepository: BlogQueryRepository,
+    public postQueryRepository: PostQueryRepository,
   ) {}
   async createNewUser(blog: BlogInputDTO): Promise<BlogsViewModel> {
     const newBlog = this.BlogModel.createNewBlog(blog, this.BlogModel);
@@ -37,20 +37,21 @@ export class BlogsService {
   }
 
   async updateBlogById(blogId: string, blog: BlogInputDTO) {
-    const findBlogById = await this.queryBlogRepository.findBlogById(blogId);
+    const findBlogById = await this.blogQueryRepository.findBlogById(blogId);
     if (!findBlogById) throw new NotFoundException([]);
     return this.blogsRepository.updateBlogById(blogId, blog);
   }
 
   async deleteBlogById(id: string) {
-    const findBlogById = await this.blogsRepository.deleteBlogById(id);
+    const findBlogById = this.blogQueryRepository.findBlogById(id);
 
     if (!findBlogById) throw new NotFoundException([]);
-    return findBlogById;
+    await this.blogsRepository.deleteBlogById(id);
+    return;
   }
 
   async createPostByBlogId(id: string, postInputDTO: PostInputDTO) {
-    const findBlogById = await this.queryBlogRepository.findBlogById(id);
+    const findBlogById = await this.blogQueryRepository.findBlogById(id);
     if (!findBlogById) throw new NotFoundException([]);
     const postData = { ...postInputDTO, blogId: id };
     return this.postsService.createNewPost(postData);
@@ -60,9 +61,9 @@ export class BlogsService {
     id: string,
     paginationInputDTO: PaginationInputDTO,
   ) {
-    const findBlogById = await this.queryBlogRepository.findBlogById(id);
+    const findBlogById = await this.blogQueryRepository.findBlogById(id);
     if (!findBlogById) throw new NotFoundException([]);
-    return await this.queryPostRepository.findBlogsPosts(
+    return await this.postQueryRepository.findBlogsPosts(
       paginationInputDTO,
       id,
     );
