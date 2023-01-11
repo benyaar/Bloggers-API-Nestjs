@@ -59,7 +59,7 @@ export class BlogsController {
   @Delete(':id')
   @HttpCode(204)
   async deleteBlogById(@Param('id') id: string) {
-    return await this.blogsService.deleteBlogById(id);
+    return this.blogsService.deleteBlogById(id);
   }
 
   @UseGuards(BasicAuthGuard)

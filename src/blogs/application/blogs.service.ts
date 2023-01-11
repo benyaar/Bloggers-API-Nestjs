@@ -43,7 +43,7 @@ export class BlogsService {
   }
 
   async deleteBlogById(id: string) {
-    const findBlogById = this.blogQueryRepository.findBlogById(id);
+    const findBlogById = await this.blogQueryRepository.findBlogById(id);
 
     if (!findBlogById) throw new NotFoundException([]);
     await this.blogsRepository.deleteBlogById(id);
