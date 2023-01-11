@@ -1,6 +1,7 @@
 import { IsNotEmpty } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
 
 export class JwtAccessDto {
-  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   userId: string;
 }

@@ -1,9 +1,10 @@
 import { IsNotEmpty, Length } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
 
 export class CreateNewPasswordDto {
   @Length(6, 20)
-  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   newPassword: string;
-  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   recoveryCode: string;
 }

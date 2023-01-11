@@ -1,14 +1,15 @@
 import { IsNotEmpty, Length } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
 
 export class CreatePostDto {
-  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 30)
   title: string;
   @Length(1, 1000)
-  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   shortDescription: string;
   @Length(1, 1000)
-  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   content: string;
   blogId: string;
 }

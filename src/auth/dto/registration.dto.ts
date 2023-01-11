@@ -1,13 +1,14 @@
 import { IsEmail, IsNotEmpty, Length } from 'class-validator';
+import { Transform, TransformFnParams } from 'class-transformer';
 
 export class RegistrationDto {
-  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(3, 10)
   login: string;
   @Length(6, 20)
-  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   password: string;
   @IsEmail()
-  @IsNotEmpty()
+  @Transform(({ value }: TransformFnParams) => value?.trim())
   email: string;
 }
