@@ -95,6 +95,7 @@ export class PostsController {
   }
 
   @UseGuards(AuthGuard('jwt'))
+  @HttpCode(204)
   @Put(':id/like-status')
   async updateLikeStatus(
     @User() user,
