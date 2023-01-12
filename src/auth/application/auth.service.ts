@@ -13,6 +13,7 @@ import { DevicesService } from '../../devices/application/devices.service';
 import * as mongoose from 'mongoose';
 import ObjectId = mongoose.Types.ObjectId;
 import { DeviceType } from '../../devices/schemas/devices.schema';
+import { JWT } from '../constants';
 
 @Injectable()
 export class AuthService {
@@ -40,8 +41,14 @@ export class AuthService {
     const payload = { userId: user.id, deviceId: deviceId };
 
     const jwtPair = {
-      accessToken: this.jwtService.sign(payload, { expiresIn: '200s' }),
-      refreshToken: this.jwtService.sign(payload, { expiresIn: '500s' }),
+      accessToken: this.jwtService.sign(payload, {
+        expiresIn: '200s',
+        secret: JWT.jwt_secret,
+      }),
+      refreshToken: this.jwtService.sign(payload, {
+        expiresIn: '500s',
+        secret: JWT.jwt_secret,
+      }),
     };
     const userSession = new DeviceType(
       ip,

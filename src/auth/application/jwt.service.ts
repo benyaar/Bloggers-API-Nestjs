@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 
 export class JwtService {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   constructor() {}
   async getDataByToken(token: string) {
     try {

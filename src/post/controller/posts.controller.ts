@@ -24,6 +24,7 @@ import { Cookies } from '../../auth/decorator/cookies.decorator';
 import { Request } from 'express';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { LikeStatusDto } from '../dto/like-status.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('posts')
 export class PostsController {
@@ -93,7 +94,7 @@ export class PostsController {
     return this.postsService.findAllCommentsForPost(id, paginationInputDTO);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(AuthGuard('jwt'))
   @Put(':id/like-status')
   async updateLikeStatus(
     @User() user,

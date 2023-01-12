@@ -6,6 +6,7 @@ import {
   Res,
   HttpCode,
   Req,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from '../application/auth.service';
 import { RegistrationDto } from '../dto/registration.dto';
@@ -13,6 +14,8 @@ import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { User } from '../decorator/request.decorator';
 import { Request, Response } from 'express';
 import { CreateNewPasswordDto } from '../dto/create-new-password.dto';
+import { log } from 'util';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 
 //
 @Controller('auth')
@@ -68,6 +71,11 @@ export class AuthController {
     return this.authService.createNewPassword(newPasswordDto);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('/in')
+  async getSome(@User() user) {
+    return user;
+  }
   // @Post('refresh-token')
   // async updateRefreshToken();
 }

@@ -22,6 +22,7 @@ import {
 } from './schemas/token-blacklist.schema';
 import { AuthRepository } from './repository/auth.repository';
 import { DeviceModule } from '../devices/device.module';
+import { JWT } from './constants';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { DeviceModule } from '../devices/device.module';
     PassportModule,
     DeviceModule,
     JwtModule.register({
-      secret: `${process.env.JWT_SECRET_KEY}`,
+      secret: JWT.jwt_secret,
+      signOptions: { expiresIn: '600s' },
     }),
     MongooseModule.forFeature([
       { name: Attempt.name, schema: AttemptSchema },
@@ -45,6 +47,7 @@ import { DeviceModule } from '../devices/device.module';
     BasicStrategy,
     JwtService,
   ],
+  exports: [JwtStrategy],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
