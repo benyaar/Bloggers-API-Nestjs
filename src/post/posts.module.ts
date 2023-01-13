@@ -10,10 +10,12 @@ import { Blog, BlogSchema } from '../blogs/schemas/blogs.schema';
 import { PostQueryRepository } from './repository/post.query-repository';
 import { CommentsModule } from '../comments/comments.module';
 import { LikeStatus, LikeStatusSchema } from './schemas/like-status.schema';
+import { PaginationModule } from '../helpers/pagination.module';
 
 @Module({
   imports: [
     CommentsModule,
+    PaginationModule,
     MongooseModule.forFeature([
       { name: Post.name, schema: PostSchema },
       { name: Blog.name, schema: BlogSchema },

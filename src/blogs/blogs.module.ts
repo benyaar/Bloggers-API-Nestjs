@@ -8,10 +8,12 @@ import { BlogsRepository } from './repository/blogs.repository';
 import { BlogQueryRepository } from './repository/blog.query-repository';
 import { Post, PostSchema } from '../post/schemas/post.schema';
 import { PostsModule } from '../post/posts.module';
+import { PaginationModule } from '../helpers/pagination.module';
 
 @Module({
   imports: [
     PostsModule,
+    PaginationModule,
     MongooseModule.forFeature([
       { name: Blog.name, schema: BlogSchema },
       { name: Post.name, schema: PostSchema },

@@ -25,6 +25,7 @@ import { Request } from 'express';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { LikeStatusDto } from '../dto/like-status.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { Token } from '../../decorators/token.decorator';
 
 @Controller('posts')
 export class PostsController {
@@ -40,8 +41,12 @@ export class PostsController {
   }
 
   @Get()
-  async findAllPosts(@Query() paginationInputDTO: PaginationInputDTO) {
-    return this.postQueryRepository.findAllPosts(paginationInputDTO);
+  async findAllPosts(
+    @Token() userId: string | null,
+    @Query() paginationInputDTO: PaginationInputDTO,
+  ) {
+    console.log(userId);
+    return this.postQueryRepository.findAllPosts(paginationInputDTO, userId);
   }
 
   @Get(':id')

@@ -3,6 +3,13 @@ import { PostViewType } from '../post/schemas/post.schema';
 import { UserViewType } from '../users/schemas/user.schema';
 import { CommentViewType } from '../comments/schema/comments.schema';
 import { PaginationInputDTO } from './dto/helpers.dto';
+import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  LikeStatus,
+  LikeStatusDocument,
+} from '../post/schemas/like-status.schema';
+import { Model } from 'mongoose';
 
 const options = {
   _id: 0,
@@ -12,63 +19,119 @@ const options = {
   __v: 0,
 };
 
-export const pagination = async (
-  parentId: string | null,
-  paginationInputDTO: PaginationInputDTO,
-  modelMongo: any,
-) => {
-  const searchNameTerm: string = paginationInputDTO.searchNameTerm;
-  const sortBy: string = paginationInputDTO.sortBy;
-  const pageNumber: number = +paginationInputDTO.pageNumber;
-  const pageSize: number = +paginationInputDTO.pageSize;
-  let sortDirection: any = paginationInputDTO.sortDirection;
+@Injectable()
+export class PaginationHelp {
+  constructor(
+    @InjectModel(LikeStatus.name)
+    private readonly likeStatusModel: Model<LikeStatusDocument>,
+  ) {}
+  async pagination(
+    parentId: string | null,
+    paginationInputDTO: PaginationInputDTO,
+    modelMongo: any,
+    userId: string | null,
+  ) {
+    const searchNameTerm: string = paginationInputDTO.searchNameTerm;
+    const sortBy: string = paginationInputDTO.sortBy;
+    const pageNumber: number = +paginationInputDTO.pageNumber;
+    const pageSize: number = +paginationInputDTO.pageSize;
+    let sortDirection: any = paginationInputDTO.sortDirection;
 
-  if (sortDirection !== ('asc' || 'desc')) sortDirection = 'desc';
+    if (sortDirection !== ('asc' || 'desc')) sortDirection = 'desc';
 
-  let searchParentId;
-  if (!parentId) {
-    searchParentId = 'null';
-  } else {
-    searchParentId = parentId;
+    let searchParentId;
+    if (!parentId) {
+      searchParentId = 'null';
+    } else {
+      searchParentId = parentId;
+    }
+
+    const findAndSorteDocuments = await modelMongo
+      .find(
+        {
+          name: { $regex: searchNameTerm, $options: 'i' },
+          [searchParentId]: parentId,
+        },
+        options,
+      )
+      .lean()
+      .sort({ [sortBy]: sortDirection })
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+
+    const getCountDocuments = await modelMongo.countDocuments({
+      [searchParentId]: parentId,
+      name: { $regex: searchNameTerm, $options: 'i' },
+    });
+    const findPostsWithLikes = await this.postWithLikeStatus(
+      findAndSorteDocuments,
+      userId,
+    );
+
+    return this.paginationResult(
+      pageNumber,
+      pageSize,
+      getCountDocuments,
+      findPostsWithLikes,
+    );
   }
 
-  const findAndSorteDocuments = await modelMongo
-    .find(
-      {
-        name: { $regex: searchNameTerm, $options: 'i' },
-        [searchParentId]: parentId,
-      },
-      options,
-    )
-    .lean()
-    .sort({ [sortBy]: sortDirection })
-    .skip((pageNumber - 1) * pageSize)
-    .limit(pageSize);
+  async paginationResult(
+    pageNumber: number,
+    pageSize: number,
+    itemsCount: number,
+    items:
+      | BlogsViewModel[]
+      | PostViewType[]
+      | UserViewType[]
+      | CommentViewType[],
+  ) {
+    const pagesCount = Math.ceil(itemsCount / pageSize);
+    return {
+      pagesCount,
+      page: pageNumber,
+      pageSize,
+      totalCount: itemsCount,
+      items,
+    };
+  }
 
-  const getCountDocuments = await modelMongo.countDocuments({
-    [searchParentId]: parentId,
-    name: { $regex: searchNameTerm, $options: 'i' },
-  });
-  return paginationResult(
-    pageNumber,
-    pageSize,
-    getCountDocuments,
-    findAndSorteDocuments,
-  );
-};
+  async postWithLikeStatus(findAndSortedPost: any, userId: string | null) {
+    const postWithLikeStatus = [];
+    for (const post of findAndSortedPost) {
+      const countLikes = await this.likeStatusModel.countDocuments({
+        parentId: post.id,
+        likeStatus: 'Like',
+      });
+      const countDislikes = await this.likeStatusModel.countDocuments({
+        parentId: post.id,
+        likeStatus: 'Dislike',
+      });
+      const findPostWithLikesByUserId = await this.likeStatusModel.findOne({
+        parentId: post.id,
+        userId: userId,
+      });
+      const findNewestPost = await this.likeStatusModel.find(
+        {
+          parentId: post.id,
+          likeStatus: 'Like',
+        },
+        { _id: 0, __v: 0, parentId: 0, likeStatus: 0 },
+        { sort: { _id: -1 }, limit: 3 },
+      );
 
-export const paginationResult = (
-  pageNumber: number,
-  pageSize: number,
-  itemsCount: number,
-  items: BlogsViewModel[] | PostViewType[] | UserViewType[] | CommentViewType[],
-) => {
-  const pagesCount = Math.ceil(itemsCount / pageSize);
-  return {
-    pagesCount,
-    page: pageNumber,
-    pageSize,
-    totalCount: itemsCount,
-    items,
-  };
-};
+      post.extendedLikesInfo.likesCount = countLikes;
+      post.extendedLikesInfo.dislikesCount = countDislikes;
+      post.extendedLikesInfo.newestLikes = findNewestPost;
+
+      if (findPostWithLikesByUserId) {
+        post.extendedLikesInfo.myStatus = findPostWithLikesByUserId.likeStatus;
+      } else {
+        post.extendedLikesInfo.myStatus = 'None';
+      }
+
+      postWithLikeStatus.push(post);
+    }
+    return postWithLikeStatus;
+  }
+}

@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blog, BlogsDocument } from '../schemas/blogs.schema';
 import { Model } from 'mongoose';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
-import { pagination, paginationResult } from '../../helpers/pagination';
+import { PaginationHelp } from '../../helpers/pagination';
 
 const options = {
   _id: 0,
@@ -17,9 +17,15 @@ export class BlogQueryRepository {
   constructor(
     @InjectModel(Blog.name)
     public blogsModel: Model<BlogsDocument>,
+    private pagination: PaginationHelp,
   ) {}
   async findAllBlogs(paginationInputType: PaginationInputDTO) {
-    return pagination(' ', paginationInputType, this.blogsModel);
+    return this.pagination.pagination(
+      ' ',
+      paginationInputType,
+      this.blogsModel,
+      null,
+    );
   }
   async findBlogById(id: string) {
     const blog = await this.blogsModel.findOne({ id: id }, options);

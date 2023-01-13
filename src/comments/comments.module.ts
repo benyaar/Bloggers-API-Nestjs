@@ -5,9 +5,11 @@ import { CommentsRepository } from './repository/comments.repository';
 import { CommentsQueryRepository } from './repository/comments.query-repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CommentsSchema, Comment } from './schema/comments.schema';
+import { PaginationModule } from '../helpers/pagination.module';
 
 @Module({
   imports: [
+    PaginationModule,
     MongooseModule.forFeature([{ name: Comment.name, schema: CommentsSchema }]),
   ],
   controllers: [CommentsController],

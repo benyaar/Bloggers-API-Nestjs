@@ -2,11 +2,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UsersDocument } from '../schemas/user.schema';
 import { Model } from 'mongoose';
 import { PaginationUserInputDTO } from '../../helpers/dto/helpers.dto';
-import { paginationResult } from '../../helpers/pagination';
+import { PaginationHelp } from '../../helpers/pagination';
 import {
   RecoveryCode,
   RecoveryCodeDocument,
 } from '../schemas/recovery-code.schema';
+import { Inject, Injectable } from '@nestjs/common';
 
 const options = {
   _id: 0,
@@ -16,11 +17,13 @@ const options = {
   __v: 0,
 };
 
+@Injectable()
 export class UsersQueryRepository {
   constructor(
     @InjectModel(User.name) private readonly usersModel: Model<UsersDocument>,
     @InjectModel(RecoveryCode.name)
     private readonly recoveryCodeModel: Model<RecoveryCodeDocument>,
+    private pagination: PaginationHelp,
   ) {}
   async findAllUsers(paginationInputDTO: PaginationUserInputDTO) {
     const searchLoginTerm: string = paginationInputDTO.searchLoginTerm;
@@ -54,7 +57,7 @@ export class UsersQueryRepository {
       ],
     });
 
-    return paginationResult(
+    return this.pagination.paginationResult(
       pageNumber,
       pageSize,
       getCountUsers,
