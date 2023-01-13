@@ -50,12 +50,16 @@ export class PostQueryRepository {
   async findPostById(id: string) {
     return this.postsModel.findOne({ id }, options);
   }
-  async findBlogsPosts(paginationInputDTO: PaginationInputDTO, blogId: string) {
+  async findBlogsPosts(
+    paginationInputDTO: PaginationInputDTO,
+    blogId: string,
+    userId: string | null,
+  ) {
     return this.pagination.pagination(
       blogId,
       paginationInputDTO,
       this.postsModel,
-      null,
+      userId,
     );
   }
   async findPostByIdWithLike(id: string, userId: string | null) {

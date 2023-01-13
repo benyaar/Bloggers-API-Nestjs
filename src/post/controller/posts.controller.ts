@@ -56,7 +56,6 @@ export class PostsController {
       userId,
     );
     if (!findPostById) throw new NotFoundException([]);
-
     return findPostById;
   }
 

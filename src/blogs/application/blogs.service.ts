@@ -60,12 +60,15 @@ export class BlogsService {
   async findAllPostsByBlogId(
     id: string,
     paginationInputDTO: PaginationInputDTO,
+    userId: string | null,
   ) {
     const findBlogById = await this.blogQueryRepository.findBlogById(id);
     if (!findBlogById) throw new NotFoundException([]);
+
     return await this.postQueryRepository.findBlogsPosts(
       paginationInputDTO,
       id,
+      userId,
     );
   }
 }

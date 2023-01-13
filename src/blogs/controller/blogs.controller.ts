@@ -19,6 +19,7 @@ import { BlogsViewModel } from '../schemas/blogs.schema';
 import { PostsService } from '../../post/application/posts.service';
 import { PostQueryRepository } from '../../post/repository/post.query-repository';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
+import { Token } from '../../decorators/token.decorator';
 
 @Controller('blogs')
 export class BlogsController {
@@ -73,9 +74,14 @@ export class BlogsController {
 
   @Get(':id/posts')
   async findAllPostByBlogId(
+    @Token() userId: string | null,
     @Param('id') id: string,
     @Query() paginationInputDTO: PaginationInputDTO,
   ) {
-    return this.blogsService.findAllPostsByBlogId(id, paginationInputDTO);
+    return this.blogsService.findAllPostsByBlogId(
+      id,
+      paginationInputDTO,
+      userId,
+    );
   }
 }
