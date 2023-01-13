@@ -85,8 +85,6 @@ export class PostsController {
     @Cookies('refreshToken') refreshToken: any,
     @Req() request: Request,
   ) {
-    console.log(refreshToken);
-    console.log(request.cookies);
     return this.postsService.createNewCommentByPostId(
       id,
       createCommentDto,

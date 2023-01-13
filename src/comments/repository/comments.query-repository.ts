@@ -11,6 +11,7 @@ const options = {
   postId: 0,
   emailConfirmation: 0,
   __v: 0,
+  parentId: 0,
 };
 
 @Injectable()
