@@ -55,11 +55,22 @@ export class PostQueryRepository {
     blogId: string,
     userId: string | null,
   ) {
-    return this.pagination.pagination(
+    const findAndSortedDocuments = await this.pagination.pagination(
       blogId,
       paginationInputDTO,
       this.postsModel,
       userId,
+    );
+
+    const findPostsWithLikes = await this.pagination.postWithLikeStatus(
+      findAndSortedDocuments.findAndSorteDocuments,
+      userId,
+    );
+    return this.pagination.paginationResult(
+      findAndSortedDocuments.pageNumber,
+      findAndSortedDocuments.pageSize,
+      findAndSortedDocuments.getCountDocuments,
+      findPostsWithLikes,
     );
   }
   async findPostByIdWithLike(id: string, userId: string | null) {
