@@ -130,4 +130,46 @@ export class PaginationHelp {
     }
     return postWithLikeStatus;
   }
+
+  async commentsWithLikeStatus(
+    findAndSortedComments: any,
+    userId: string | null,
+  ) {
+    const commentWithLikeStatus = [];
+    for (const comment of findAndSortedComments) {
+      const countLikes = await this.likeStatusModel.countDocuments({
+        parentId: comment.id,
+        likeStatus: 'Like',
+      });
+      const countDislikes = await this.likeStatusModel.countDocuments({
+        parentId: comment.id,
+        likeStatus: 'Dislike',
+      });
+      const findCommentWithLikesByUserId = await this.likeStatusModel.findOne({
+        parentId: comment.id,
+        userId: userId,
+      });
+      const findNewestComment = await this.likeStatusModel.find(
+        {
+          parentId: comment.id,
+          likeStatus: 'Like',
+        },
+        { _id: 0, __v: 0, parentId: 0, likeStatus: 0 },
+        { sort: { _id: -1 }, limit: 3 },
+      );
+
+      comment.likesInfo.likesCount = countLikes;
+      comment.likesInfo.dislikesCount = countDislikes;
+      comment.likesInfo.newestLikes = findNewestComment;
+
+      if (findCommentWithLikesByUserId) {
+        comment.likesInfo.myStatus = findCommentWithLikesByUserId.likeStatus;
+      } else {
+        comment.likesInfo.myStatus = 'None';
+      }
+
+      commentWithLikeStatus.push(comment);
+    }
+    return commentWithLikeStatus;
+  }
 }

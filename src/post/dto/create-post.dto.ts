@@ -1,5 +1,6 @@
 import { IsNotEmpty, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
+import { IsMongoIdBlogDecorator } from '../decorators/is-mongoId-blog.decorator';
 
 export class CreatePostDto {
   @Transform(({ value }: TransformFnParams) => value?.trim())
@@ -11,6 +12,7 @@ export class CreatePostDto {
   @Length(1, 1000)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   content: string;
+  @IsMongoIdBlogDecorator()
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 30)
   blogId: string;

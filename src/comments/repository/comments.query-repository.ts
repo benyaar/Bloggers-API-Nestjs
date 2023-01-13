@@ -38,10 +38,11 @@ export class CommentsQueryRepository {
   }
   async findCommentByIdWithLikes(id: string, userId: string) {
     const findCommentById = await this.commentsModel.find({ id }, options);
-    const commentWithLike = await this.pagination.postWithLikeStatus(
+    const commentWithLike = await this.pagination.commentsWithLikeStatus(
       findCommentById,
       userId,
     );
     return commentWithLike[0];
+    return true;
   }
 }

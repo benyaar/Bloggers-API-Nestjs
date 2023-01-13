@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -11,9 +11,12 @@ import { PostQueryRepository } from './repository/post.query-repository';
 import { CommentsModule } from '../comments/comments.module';
 import { LikeStatus, LikeStatusSchema } from './schemas/like-status.schema';
 import { PaginationModule } from '../helpers/pagination.module';
+import { BlogIdValidator } from './decorators/blog-id-validator';
+import { BlogsModule } from '../blogs/blogs.module';
 
 @Module({
   imports: [
+    forwardRef(() => BlogsModule),
     CommentsModule,
     PaginationModule,
     MongooseModule.forFeature([
@@ -23,7 +26,17 @@ import { PaginationModule } from '../helpers/pagination.module';
     ]),
   ],
   controllers: [PostsController],
-  providers: [PostsService, PostsRepository, PostQueryRepository],
-  exports: [PostsService, PostsRepository, PostQueryRepository],
+  providers: [
+    PostsService,
+    PostsRepository,
+    PostQueryRepository,
+    BlogIdValidator,
+  ],
+  exports: [
+    PostsService,
+    PostsRepository,
+    PostQueryRepository,
+    BlogIdValidator,
+  ],
 })
 export class PostsModule {}

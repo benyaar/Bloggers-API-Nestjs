@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 
 import { Blog, BlogSchema } from './schemas/blogs.schema';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -12,7 +12,7 @@ import { PaginationModule } from '../helpers/pagination.module';
 
 @Module({
   imports: [
-    PostsModule,
+    forwardRef(() => PostsModule),
     PaginationModule,
     MongooseModule.forFeature([
       { name: Blog.name, schema: BlogSchema },
@@ -21,5 +21,6 @@ import { PaginationModule } from '../helpers/pagination.module';
   ],
   controllers: [BlogsController],
   providers: [BlogsService, BlogsRepository, BlogQueryRepository],
+  exports: [BlogsService, BlogsRepository, BlogQueryRepository],
 })
 export class BlogsModule {}

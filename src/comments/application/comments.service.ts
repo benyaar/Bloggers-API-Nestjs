@@ -31,11 +31,12 @@ export class CommentsService {
       {
         likesCount: 0,
         dislikesCount: 0,
-        myStatus: 'none',
+        myStatus: 'None',
       },
     );
     await this.commentsRepository.saveNewComment(newComment);
-    return newComment;
+    const { parentId, ...newCommentCopy } = newComment;
+    return newCommentCopy;
   }
   async updateCommentById(
     commentId: string,
