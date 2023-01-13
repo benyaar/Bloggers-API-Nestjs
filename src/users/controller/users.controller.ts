@@ -34,7 +34,6 @@ export class UsersController {
   }
 
   @Get()
-  //getUsers(@Query('term') term: string ) - или так getUsers(@Query() query: Type )
   async findAllUsers(@Query() paginationInputDTO: PaginationUserInputDTO) {
     return this.queryUserRepository.findAllUsers(paginationInputDTO);
   }

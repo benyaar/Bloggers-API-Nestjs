@@ -63,17 +63,13 @@ export class PaginationHelp {
       [searchParentId]: parentId,
       name: { $regex: searchNameTerm, $options: 'i' },
     });
-    const findPostsWithLikes = await this.postWithLikeStatus(
-      findAndSorteDocuments,
-      userId,
-    );
 
-    return this.paginationResult(
+    return {
       pageNumber,
       pageSize,
       getCountDocuments,
-      findPostsWithLikes,
-    );
+      findAndSorteDocuments,
+    };
   }
 
   async paginationResult(
