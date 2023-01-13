@@ -11,7 +11,6 @@ import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { CommentsQueryRepository } from '../../comments/repository/comments.query-repository';
 import { UserViewType } from '../../users/schemas/user.schema';
 import { LikeStatusType } from '../schemas/like-status.schema';
-import { LikeStatusDto } from '../dto/like-status.dto';
 
 @Injectable()
 export class PostsService {
@@ -73,10 +72,15 @@ export class PostsService {
   async findAllCommentsForPost(
     id: string,
     paginationInputDTO: PaginationInputDTO,
+    userId: string | null,
   ) {
     const findPostById = await this.postQueryRepository.findPostById(id);
     if (!findPostById) throw new NotFoundException([]);
-    return this.commentsQueryRepository.findAllComments(id, paginationInputDTO);
+    return this.commentsQueryRepository.findAllComments(
+      id,
+      paginationInputDTO,
+      userId,
+    );
   }
   async updateLikeStatus(
     user: UserViewType,

@@ -7,6 +7,8 @@ import ObjectId = mongoose.Types.ObjectId;
 import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { CommentsQueryRepository } from '../repository/comments.query-repository';
 import { UserViewType } from '../../users/schemas/user.schema';
+import { LikeStatusType } from '../../post/schemas/like-status.schema';
+import { PostsRepository } from '../../post/repository/posts.repository';
 
 @Injectable()
 export class CommentsService {
@@ -54,5 +56,26 @@ export class CommentsService {
     );
     if (!findCommentById) throw new NotFoundException([]);
     return this.commentsRepository.deleteCommentById(commentId);
+  }
+
+  async updateLikeStatus(
+    user: UserViewType,
+    commentId: string,
+    likeStatus: string,
+  ) {
+    const findCommentById = await this.commentsQueryRepository.findCommentById(
+      commentId,
+    );
+    if (!findCommentById) throw new NotFoundException([]);
+
+    const likeStatusModel = new LikeStatusType(
+      commentId,
+      user.id,
+      user.login,
+      likeStatus,
+      new Date(),
+    );
+
+    return this.commentsRepository.updateLikeStatus(likeStatusModel);
   }
 }

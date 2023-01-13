@@ -23,15 +23,24 @@ export class CommentsQueryRepository {
   async findAllComments(
     parentId: string,
     paginationInputDTO: PaginationInputDTO,
+    userId: string | null,
   ) {
     return this.pagination.pagination(
       parentId,
       paginationInputDTO,
       this.commentsModel,
-      null,
+      userId,
     );
   }
   async findCommentById(id: string) {
     return this.commentsModel.findOne({ id }, options);
+  }
+  async findCommentByIdWithLikes(id: string, userId: string) {
+    const findCommentById = await this.commentsModel.find({ id }, options);
+    const commentWithLike = await this.pagination.postWithLikeStatus(
+      findCommentById,
+      userId,
+    );
+    return commentWithLike[0];
   }
 }

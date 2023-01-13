@@ -18,7 +18,7 @@ export class PostInputDTO {
   @Length(1, 30)
   title: string;
   @Transform(({ value }: TransformFnParams) => value?.trim())
-  @Length(1, 1000)
+  @Length(1, 100)
   shortDescription: string;
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 1000)

@@ -5,7 +5,7 @@ export class CreatePostDto {
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 30)
   title: string;
-  @Length(1, 1000)
+  @Length(1, 100)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   shortDescription: string;
   @Length(1, 1000)

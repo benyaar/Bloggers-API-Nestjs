@@ -93,12 +93,18 @@ export class PostsController {
       user,
     );
   }
+
   @Get(':id/comments')
   async findAllCommentsForPost(
     @Param('id') id: string,
     @Query() paginationInputDTO: PaginationInputDTO,
+    @Token() userId: string | null,
   ) {
-    return this.postsService.findAllCommentsForPost(id, paginationInputDTO);
+    return this.postsService.findAllCommentsForPost(
+      id,
+      paginationInputDTO,
+      userId,
+    );
   }
 
   @UseGuards(AuthGuard('jwt'))
