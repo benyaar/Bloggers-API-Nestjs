@@ -50,8 +50,11 @@ export class PostsController {
   }
 
   @Get(':id')
-  async findPostById(@Param('id') id: string) {
-    const findPostById = await this.postQueryRepository.findPostById(id);
+  async findPostById(@Param('id') id: string, @Token() userId: string | null) {
+    const findPostById = await this.postQueryRepository.findPostByIdWithLike(
+      id,
+      userId,
+    );
     if (!findPostById) throw new NotFoundException([]);
 
     return findPostById;

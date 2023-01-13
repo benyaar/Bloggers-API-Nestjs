@@ -58,4 +58,12 @@ export class PostQueryRepository {
       null,
     );
   }
+  async findPostByIdWithLike(id: string, userId: string | null) {
+    const findPostById = await this.postsModel.find({ id }, options);
+    const postWithLike = await this.pagination.postWithLikeStatus(
+      findPostById,
+      userId,
+    );
+    return postWithLike[0];
+  }
 }
