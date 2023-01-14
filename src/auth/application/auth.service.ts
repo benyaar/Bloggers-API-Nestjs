@@ -99,6 +99,10 @@ export class AuthService {
   }
 
   async updateToken(refreshToken: string, ip: IpDto) {
+    const findRefreshTokenInBlackList =
+      await this.authRepository.findTokenInBlackList(refreshToken);
+    if (findRefreshTokenInBlackList) throw new UnauthorizedException([]);
+
     const verifyToken = await this.verifyToken(refreshToken);
     if (!verifyToken) throw new UnauthorizedException([]);
 

@@ -1,4 +1,5 @@
 import {
+  forwardRef,
   MiddlewareConsumer,
   Module,
   NestModule,
@@ -28,7 +29,7 @@ import { JWT } from './constants';
   imports: [
     UsersModule,
     PassportModule,
-    DeviceModule,
+    forwardRef(() => DeviceModule),
     JwtModule.register({
       secret: JWT.jwt_secret,
       signOptions: { expiresIn: '600s' },
@@ -47,7 +48,14 @@ import { JWT } from './constants';
     BasicStrategy,
     JwtService,
   ],
-  exports: [JwtStrategy],
+  exports: [
+    AuthService,
+    AuthRepository,
+    LocalStrategy,
+    JwtStrategy,
+    BasicStrategy,
+    JwtService,
+  ],
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

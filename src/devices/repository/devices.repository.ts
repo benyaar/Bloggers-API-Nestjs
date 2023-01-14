@@ -20,4 +20,15 @@ export class DevicesRepository {
   async findDevicesByUserId(userId: string) {
     return this.deviceModel.find({ userId: userId });
   }
+  async deleteUserSessions(userId, deviceId) {
+    return this.deviceModel.deleteMany({ userId, deviceId: { $ne: deviceId } });
+  }
+
+  async findDeviceByDeviceId(id: string) {
+    return this.deviceModel.findOne({ deviceId: id });
+  }
+
+  async deleteUserSessionById(userId: string, deviceId: string) {
+    return this.deviceModel.deleteOne({ userId, deviceId });
+  }
 }
