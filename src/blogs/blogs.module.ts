@@ -9,6 +9,8 @@ import { BlogQueryRepository } from './repository/blog.query-repository';
 import { Post, PostSchema } from '../post/schemas/post.schema';
 import { PostsModule } from '../post/posts.module';
 import { PaginationModule } from '../helpers/pagination.module';
+import { PostsService } from '../post/application/posts.service';
+import { PostQueryRepository } from '../post/repository/post.query-repository';
 
 @Module({
   imports: [

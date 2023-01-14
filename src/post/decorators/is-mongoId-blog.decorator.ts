@@ -8,6 +8,7 @@ export function IsMongoIdBlogDecorator(validationOptions?: ValidationOptions) {
       target: object.constructor,
       propertyName: propertyName,
       constraints: [],
+      options: validationOptions,
       validator: BlogIdValidator,
     });
   };

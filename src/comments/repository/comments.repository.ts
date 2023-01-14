@@ -22,14 +22,20 @@ export class CommentsRepository {
   async saveNewComment(newComment: CommentDBModalType) {
     return this.commentsModel.insertMany(newComment);
   }
-  async updateCommentById(id: string, updateCommentDto: UpdateCommentDto) {
-    return this.commentsModel.updateOne(
-      { id },
+  async updateCommentById(
+    id: string,
+    updateCommentDto: UpdateCommentDto,
+    userId: string,
+  ) {
+    const updateComment = await this.commentsModel.updateOne(
+      { id, userId },
       { $set: { content: updateCommentDto.content } },
     );
+    return true;
   }
-  async deleteCommentById(id: string) {
-    return this.commentsModel.deleteOne({ id });
+  async deleteCommentById(id: string, userId: string) {
+    const deleteComment = await this.commentsModel.deleteOne({ id, userId });
+    return true;
   }
 
   async updateLikeStatus(likeStatus: LikeStatusType) {

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CommentsRepository } from '../repository/comments.repository';
 import { CreateCommentDto } from '../../post/dto/create-comment.dto';
 import { CommentDBModalType } from '../schema/comments.schema';
@@ -41,22 +45,34 @@ export class CommentsService {
   async updateCommentById(
     commentId: string,
     updateCommentDto: UpdateCommentDto,
+    user: UserViewType,
   ) {
     const findCommentById = await this.commentsQueryRepository.findCommentById(
       commentId,
     );
     if (!findCommentById) throw new NotFoundException([]);
-    return this.commentsRepository.updateCommentById(
+
+    const updateComments = await this.commentsRepository.updateCommentById(
       commentId,
       updateCommentDto,
+      user.id,
     );
+
+    if (!updateComments) throw new ForbiddenException([]);
+    return updateComments;
   }
-  async deleteCommentById(commentId: string) {
+  async deleteCommentById(commentId: string, userId: string) {
     const findCommentById = await this.commentsQueryRepository.findCommentById(
       commentId,
     );
     if (!findCommentById) throw new NotFoundException([]);
-    return this.commentsRepository.deleteCommentById(commentId);
+
+    const deleteComment = await this.commentsRepository.deleteCommentById(
+      commentId,
+      userId,
+    );
+    if (!deleteComment) throw new ForbiddenException([]);
+    return deleteComment;
   }
 
   async updateLikeStatus(

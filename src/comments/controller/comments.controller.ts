@@ -16,6 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { User } from '../../auth/decorator/request.decorator';
 import { LikeStatusDto } from '../../post/dto/like-status.dto';
 import { Token } from '../../decorators/token.decorator';
+import { UserViewType } from '../../users/schemas/user.schema';
 
 @Controller('comments')
 export class CommentsController {
@@ -41,15 +42,23 @@ export class CommentsController {
   async updateCommentById(
     @Param('commentId') commentId: string,
     @Body() updateCommentDto: UpdateCommentDto,
+    @User() user: UserViewType,
   ) {
-    return this.commentsService.updateCommentById(commentId, updateCommentDto);
+    return this.commentsService.updateCommentById(
+      commentId,
+      updateCommentDto,
+      user,
+    );
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Delete(':commentId')
   @HttpCode(204)
-  async deleteCommentById(@Param('commentId') commentId: string) {
-    return this.commentsService.deleteCommentById(commentId);
+  async deleteCommentById(
+    @User() user: UserViewType,
+    @Param('commentId') commentId: string,
+  ) {
+    return this.commentsService.deleteCommentById(commentId, user.id);
   }
 
   @UseGuards(AuthGuard('jwt'))

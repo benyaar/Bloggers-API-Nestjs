@@ -13,6 +13,7 @@ import { LikeStatus, LikeStatusSchema } from './schemas/like-status.schema';
 import { PaginationModule } from '../helpers/pagination.module';
 import { BlogIdValidator } from './decorators/blog-id-validator';
 import { BlogsModule } from '../blogs/blogs.module';
+import { BlogQueryRepository } from '../blogs/repository/blog.query-repository';
 
 @Module({
   imports: [
@@ -32,11 +33,6 @@ import { BlogsModule } from '../blogs/blogs.module';
     PostQueryRepository,
     BlogIdValidator,
   ],
-  exports: [
-    PostsService,
-    PostsRepository,
-    PostQueryRepository,
-    BlogIdValidator,
-  ],
+  exports: [PostsService, PostsRepository, PostQueryRepository],
 })
 export class PostsModule {}
