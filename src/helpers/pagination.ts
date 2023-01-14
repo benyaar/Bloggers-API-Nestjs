@@ -43,7 +43,7 @@ export class PaginationHelp {
     if (!parentId) {
       searchParentId = 'null';
     } else {
-      searchParentId = parentId;
+      searchParentId = 'parentId';
     }
 
     const findAndSorteDocuments = await modelMongo
