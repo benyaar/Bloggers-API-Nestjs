@@ -9,9 +9,7 @@ import { BlogQueryRepository } from '../../blogs/repository/blog.query-repositor
 @ValidatorConstraint({ name: 'IsMongoIdBlogDecorator', async: true })
 @Injectable()
 export class BlogIdValidator implements ValidatorConstraintInterface {
-  constructor(private blogQueryRepository: BlogQueryRepository) {
-    console.log(this.blogQueryRepository);
-  }
+  constructor(private blogQueryRepository: BlogQueryRepository) {}
   async validate(blogId: string) {
     try {
       const blog = await this.blogQueryRepository.findBlogById(blogId);

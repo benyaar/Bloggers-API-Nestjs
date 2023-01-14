@@ -87,11 +87,14 @@ export class AuthController {
 
   @Post('/refresh-token')
   async updateToken(
-    @Cookies() refreshToken: string,
+    @Cookies() cookies,
     @Ip() ip: IpDto,
     @Res({ passthrough: true }) response: Response,
   ) {
-    const updateToken = await this.authService.updateToken(refreshToken, ip);
+    const updateToken = await this.authService.updateToken(
+      cookies.refreshToken,
+      ip,
+    );
 
     response.cookie('refreshToken', updateToken.refreshToken, {
       httpOnly: true,
