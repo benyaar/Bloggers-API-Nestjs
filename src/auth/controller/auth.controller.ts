@@ -81,8 +81,8 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/logout')
-  async logout(@Cookies() refreshToken: string) {
-    return this.authService.logoutUser(refreshToken);
+  async logout(@Cookies() cookies) {
+    return this.authService.logoutUser(cookies.refreshToken);
   }
 
   @Post('/refresh-token')
