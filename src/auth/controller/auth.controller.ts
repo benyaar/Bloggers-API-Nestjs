@@ -86,6 +86,7 @@ export class AuthController {
   }
 
   @Post('/refresh-token')
+  @HttpCode(200)
   async updateToken(
     @Cookies() cookies,
     @Ip() ip: IpDto,
