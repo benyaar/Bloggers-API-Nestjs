@@ -26,11 +26,22 @@ export class CommentsQueryRepository {
     paginationInputDTO: PaginationInputDTO,
     userId: string | null,
   ) {
-    return this.pagination.pagination(
+    const findAndSortedDocuments = await this.pagination.pagination(
       parentId,
       paginationInputDTO,
       this.commentsModel,
       userId,
+    );
+
+    const findCommentsWithLikes = await this.pagination.commentsWithLikeStatus(
+      findAndSortedDocuments.findAndSorteDocuments,
+      userId,
+    );
+    return this.pagination.paginationResult(
+      findAndSortedDocuments.pageNumber,
+      findAndSortedDocuments.pageSize,
+      findAndSortedDocuments.getCountDocuments,
+      findCommentsWithLikes,
     );
   }
   async findCommentById(id: string) {

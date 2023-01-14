@@ -27,15 +27,13 @@ export class CommentsRepository {
     updateCommentDto: UpdateCommentDto,
     userId: string,
   ) {
-    const updateComment = await this.commentsModel.updateOne(
+    return this.commentsModel.updateOne(
       { id, userId },
       { $set: { content: updateCommentDto.content } },
     );
-    return true;
   }
   async deleteCommentById(id: string, userId: string) {
-    const deleteComment = await this.commentsModel.deleteOne({ id, userId });
-    return true;
+    return this.commentsModel.deleteOne({ id, userId });
   }
 
   async updateLikeStatus(likeStatus: LikeStatusType) {

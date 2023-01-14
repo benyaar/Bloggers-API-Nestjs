@@ -51,28 +51,20 @@ export class CommentsService {
       commentId,
     );
     if (!findCommentById) throw new NotFoundException([]);
-
-    const updateComments = await this.commentsRepository.updateCommentById(
+    if (findCommentById.userId !== user.id) throw new ForbiddenException([]);
+    return this.commentsRepository.updateCommentById(
       commentId,
       updateCommentDto,
       user.id,
     );
-
-    if (!updateComments) throw new ForbiddenException([]);
-    return updateComments;
   }
   async deleteCommentById(commentId: string, userId: string) {
     const findCommentById = await this.commentsQueryRepository.findCommentById(
       commentId,
     );
     if (!findCommentById) throw new NotFoundException([]);
-
-    const deleteComment = await this.commentsRepository.deleteCommentById(
-      commentId,
-      userId,
-    );
-    if (!deleteComment) throw new ForbiddenException([]);
-    return deleteComment;
+    if (findCommentById.userId !== userId) throw new ForbiddenException([]);
+    return this.commentsRepository.deleteCommentById(commentId, userId);
   }
 
   async updateLikeStatus(
