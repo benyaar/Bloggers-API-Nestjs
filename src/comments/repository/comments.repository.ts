@@ -39,6 +39,7 @@ export class CommentsRepository {
   }
 
   async updateLikeStatus(likeStatus: LikeStatusType) {
+    console.log(likeStatus);
     return this.likeStatusModel.findOneAndUpdate(
       { parentId: likeStatus.parentId, userId: likeStatus.userId },
       { ...likeStatus },
