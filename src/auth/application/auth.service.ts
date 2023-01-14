@@ -62,10 +62,20 @@ export class AuthService {
         secret: JWT.jwt_secret,
       }),
     };
-    const userSession = new DeviceType(ip, title, new Date(), deviceId, userId);
-    await this.devicesService.createNewUserSession(userSession);
+    await this.createUserSession(userId, ip, title, deviceId);
     return jwtPair;
   }
+
+  async createUserSession(
+    userId: string,
+    ip: string,
+    title: string,
+    deviceId: string,
+  ) {
+    const userSession = new DeviceType(ip, title, new Date(), deviceId, userId);
+    return this.devicesService.createNewUserSession(userSession);
+  }
+
   async emailResending(email: string) {
     const findUserByLoginOrEmail =
       await this.usersService.findUserByLoginOrEmail(email);
@@ -127,6 +137,13 @@ export class AuthService {
       verifyToken.deviceId,
     );
 
+    await this.authRepository.updateUserSession(
+      verifyToken.userId,
+      ip.ip,
+      ip.title,
+      verifyToken.deviceId,
+      new Date(),
+    );
     await this.authRepository.addTokenInBlackList(refreshToken);
     return createNewTokenPair;
   }

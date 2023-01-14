@@ -24,6 +24,7 @@ import {
 import { AuthRepository } from './repository/auth.repository';
 import { DeviceModule } from '../devices/device.module';
 import { JWT } from './constants';
+import { Device, DeviceSchema } from '../devices/schemas/devices.schema';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { JWT } from './constants';
     MongooseModule.forFeature([
       { name: Attempt.name, schema: AttemptSchema },
       { name: TokenBlackList.name, schema: TokenBlackListSchema },
+      { name: Device.name, schema: DeviceSchema },
     ]),
   ],
   controllers: [AuthController],
