@@ -112,6 +112,12 @@ export class AuthService {
 
     const verifyToken = await this.verifyToken(refreshToken);
     if (!verifyToken) throw new UnauthorizedException([]);
+
+    await this.authRepository.deleteUserSessionByDeviceId(
+      verifyToken.userId,
+      verifyToken.deviceId,
+    );
+
     return this.authRepository.addTokenInBlackList(refreshToken);
   }
   async verifyToken(token: string) {

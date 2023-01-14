@@ -31,4 +31,7 @@ export class AuthRepository {
       { $set: { lastActiveDate: date, ip, title } },
     );
   }
+  async deleteUserSessionByDeviceId(userId: string, deviceId: string) {
+    return this.deviceModel.deleteOne({ userId, deviceId });
+  }
 }
