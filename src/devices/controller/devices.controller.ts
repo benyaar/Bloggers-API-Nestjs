@@ -2,7 +2,7 @@ import { DevicesService } from '../application/devices.service';
 import { Controller, Delete, Get, HttpCode, Param, Req } from '@nestjs/common';
 import { Cookies } from '../../auth/decorator/cookies.decorator';
 
-@Controller('devices')
+@Controller('security/devices')
 export class DevicesController {
   constructor(private readonly devicesService: DevicesService) {}
 

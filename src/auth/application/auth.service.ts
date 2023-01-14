@@ -87,6 +87,12 @@ export class AuthService {
   }
 
   async logoutUser(refreshToken: string) {
+    const findRefreshTokenInBlackList =
+      await this.authRepository.findTokenInBlackList(refreshToken);
+    if (findRefreshTokenInBlackList) throw new UnauthorizedException([]);
+
+    const verifyToken = await this.verifyToken(refreshToken);
+    if (!verifyToken) throw new UnauthorizedException([]);
     return this.authRepository.addTokenInBlackList(refreshToken);
   }
   async verifyToken(token: string) {

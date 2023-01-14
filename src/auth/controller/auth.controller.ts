@@ -79,7 +79,6 @@ export class AuthController {
     return { userId: user.id, login: user.login, email: user.email };
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('/logout')
   async logout(@Cookies() cookies) {
     return this.authService.logoutUser(cookies.refreshToken);
