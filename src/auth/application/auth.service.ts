@@ -42,6 +42,14 @@ export class AuthService {
 
   async login(userId: any, ip: string, title: string) {
     const deviceId = new ObjectId().toString();
+    return this.createJwtPair(userId, ip, title, deviceId);
+  }
+  async createJwtPair(
+    userId: string,
+    ip: string,
+    title: string,
+    deviceId: string,
+  ) {
     const payload = { userId: userId, deviceId: deviceId };
 
     const jwtPair = {
@@ -98,7 +106,7 @@ export class AuthService {
   async verifyToken(token: string) {
     try {
       const result: any = jwt.verify(token, JWT.jwt_secret);
-      return result.userId;
+      return result;
     } catch (error) {
       return null;
     }
@@ -112,7 +120,12 @@ export class AuthService {
     const verifyToken = await this.verifyToken(refreshToken);
     if (!verifyToken) throw new UnauthorizedException([]);
 
-    const createNewTokenPair = await this.login(verifyToken, ip.ip, ip.title);
+    const createNewTokenPair = await this.createJwtPair(
+      verifyToken.userId,
+      ip.ip,
+      ip.title,
+      verifyToken.deviceId,
+    );
 
     await this.authRepository.addTokenInBlackList(refreshToken);
     return createNewTokenPair;
