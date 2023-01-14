@@ -14,8 +14,10 @@ import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { User } from '../decorator/request.decorator';
 import { Request, Response } from 'express';
 import { CreateNewPasswordDto } from '../dto/create-new-password.dto';
-import { log } from 'util';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { Cookies } from '../decorator/cookies.decorator';
+import { IpDto } from '../dto/ip.dto';
+import { Ip } from '../decorator/ip.decorator';
 
 //
 @Controller('auth')
@@ -38,7 +40,7 @@ export class AuthController {
   ) {
     const ip = req.ip;
     const title = req.headers['user-agent'] || 'browser not found';
-    const JwtPair = await this.authService.login(user, ip, title);
+    const JwtPair = await this.authService.login(user.id, ip, title);
     response.cookie('refreshToken', JwtPair.refreshToken, {
       httpOnly: true,
       secure: true,
@@ -72,10 +74,30 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('/in')
+  @Get('/me')
   async getSome(@User() user) {
-    return user;
+    return { userId: user.id, login: user.login, email: user.email };
   }
-  // @Post('refresh-token')
-  // async updateRefreshToken();
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/logout')
+  async logout(@Cookies() refreshToken: string) {
+    return this.authService.logoutUser(refreshToken);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/refresh-token')
+  async updateToken(
+    @Cookies() refreshToken: string,
+    @Ip() ip: IpDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const updateToken = await this.authService.updateToken(refreshToken, ip);
+
+    response.cookie('refreshToken', updateToken.refreshToken, {
+      httpOnly: true,
+      secure: true,
+    });
+    return updateToken;
+  }
 }

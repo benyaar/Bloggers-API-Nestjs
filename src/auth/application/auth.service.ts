@@ -14,6 +14,9 @@ import * as mongoose from 'mongoose';
 import ObjectId = mongoose.Types.ObjectId;
 import { DeviceType } from '../../devices/schemas/devices.schema';
 import { JWT } from '../constants';
+import { AuthRepository } from '../repository/auth.repository';
+import { IpDto } from '../dto/ip.dto';
+import jwt from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
@@ -21,6 +24,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly devicesService: DevicesService,
+    private readonly authRepository: AuthRepository,
   ) {}
   async registration(registrationDto: RegistrationDto) {
     return this.usersService.createUser(registrationDto);
@@ -36,9 +40,9 @@ export class AuthService {
     return findUserByLoginOrEmail;
   }
 
-  async login(user: any, ip: string, title: string) {
+  async login(userId: any, ip: string, title: string) {
     const deviceId = new ObjectId().toString();
-    const payload = { userId: user.id, deviceId: deviceId };
+    const payload = { userId: userId, deviceId: deviceId };
 
     const jwtPair = {
       accessToken: this.jwtService.sign(payload, {
@@ -50,13 +54,7 @@ export class AuthService {
         secret: JWT.jwt_secret,
       }),
     };
-    const userSession = new DeviceType(
-      ip,
-      title,
-      new Date(),
-      deviceId,
-      user.id,
-    );
+    const userSession = new DeviceType(ip, title, new Date(), deviceId, userId);
     await this.devicesService.createNewUserSession(userSession);
     return jwtPair;
   }
@@ -86,5 +84,27 @@ export class AuthService {
 
   async createNewPassword(password: CreateNewPasswordDto) {
     return this.usersService.createNewPassword(password);
+  }
+
+  async logoutUser(refreshToken: string) {
+    return this.authRepository.addTokenInBlackList(refreshToken);
+  }
+  async verifyToken(token: string) {
+    try {
+      const result: any = jwt.verify(token, JWT.jwt_secret);
+      return result.userId;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async updateToken(refreshToken: string, ip: IpDto) {
+    const verifyToken = await this.verifyToken(refreshToken);
+    if (!verifyToken) throw new UnauthorizedException([]);
+
+    const createNewTokenPair = await this.login(verifyToken, ip.ip, ip.title);
+
+    await this.authRepository.addTokenInBlackList(refreshToken);
+    return createNewTokenPair;
   }
 }
