@@ -22,7 +22,7 @@ export class DevicesService {
   async verifyToken(token: string) {
     try {
       const result: any = jwt.verify(token, JWT.jwt_secret);
-      return result.userId;
+      return result;
     } catch (error) {
       return null;
     }

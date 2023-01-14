@@ -80,6 +80,7 @@ export class AuthController {
   }
 
   @Post('/logout')
+  @HttpCode(204)
   async logout(@Cookies() cookies) {
     return this.authService.logoutUser(cookies.refreshToken);
   }

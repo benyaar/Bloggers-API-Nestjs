@@ -6,6 +6,7 @@ import { Injectable } from '@nestjs/common';
 const options = {
   _id: 0,
   __v: 0,
+  userId: 0,
 };
 
 @Injectable()
@@ -18,7 +19,7 @@ export class DevicesRepository {
     return this.deviceModel.insertMany(userSession);
   }
   async findDevicesByUserId(userId: string) {
-    return this.deviceModel.find({ userId: userId });
+    return this.deviceModel.find({ userId: userId }, options);
   }
   async deleteUserSessions(userId, deviceId) {
     return this.deviceModel.deleteMany({ userId, deviceId: { $ne: deviceId } });
