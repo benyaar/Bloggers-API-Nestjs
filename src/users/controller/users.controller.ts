@@ -57,7 +57,7 @@ export class UsersController {
   }
 
   @UseGuards(BasicAuthGuard)
-  @Put('/:id/ban')
+  @Put(':id/ban')
   @HttpCode(204)
   async banUserById(@Param('id') id: string, @Body() banUserDto: BanUserDto) {
     return this.usersService.banUserById(id, banUserDto);
