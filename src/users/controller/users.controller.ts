@@ -7,6 +7,7 @@ import {
   NotFoundException,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -19,6 +20,7 @@ import {
   PaginationUserInputDTO,
 } from '../../helpers/dto/helpers.dto';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
+import { BanUserDto } from '../dto/ban-user.dto';
 
 @Controller('/sa/users')
 export class UsersController {
@@ -52,5 +54,12 @@ export class UsersController {
     const findUserById = await this.queryUserRepository.findUserById(id);
     if (!findUserById) throw new NotFoundException([]);
     return this.usersService.deleteUserById(id);
+  }
+
+  @UseGuards(BasicAuthGuard)
+  @Put('/:id/ban')
+  @HttpCode(204)
+  async banUserById(@Param('id') id: string, @Body() banUserDto: BanUserDto) {
+    return this.usersService.banUserById(id, banUserDto);
   }
 }

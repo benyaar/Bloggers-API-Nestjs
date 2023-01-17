@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
+  BanInfo,
   EmailConfirmation,
   User,
   UsersDocument,
@@ -11,6 +12,7 @@ import {
   RecoveryCode,
   RecoveryCodeDocument,
 } from '../schemas/recovery-code.schema';
+import { BanUserDto } from '../dto/ban-user.dto';
 
 @Injectable()
 export class UsersRepository {
@@ -49,6 +51,17 @@ export class UsersRepository {
     return this.usersModel.updateOne(
       { id: user.id },
       { $set: { emailConfirmation: newEmailConfirmation } },
+    );
+  }
+
+  async findUserById(id: string) {
+    return this.usersModel.findOne({ id });
+  }
+
+  async banUserById(id: string, banInfo: BanInfo) {
+    return this.usersModel.updateOne(
+      { id: id },
+      { $set: { banInfo: banInfo } },
     );
   }
 }

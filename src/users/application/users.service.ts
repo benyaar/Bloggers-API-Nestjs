@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { UsersRepository } from '../repository/users.repository';
 import {
+  BanInfo,
   EmailConfirmation,
   UsersDocument,
   UserViewType,
@@ -19,6 +20,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { EmailService } from '../../email/email.service';
 import { CreateNewPasswordDto } from '../../auth/dto/create-new-password.dto';
 import { RecoveryCodeType } from '../schemas/recovery-code.schema';
+import { BanUserDto } from '../dto/ban-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -158,5 +160,20 @@ export class UsersService {
     findUserByEmail.passwordHash = hash;
     await this.usersRepository.updateUserHash(findUserByEmail, hash);
     return;
+  }
+
+  async findUserById(id: string) {
+    return this.usersRepository.findUserById(id);
+  }
+
+  async banUserById(id: string, banUserDto: BanUserDto) {
+    const findUserById = await this.findUserById(id);
+    if (!findUserById) throw new NotFoundException([]);
+    const banInfo: BanInfo = {
+      banDate: new Date(),
+      banReason: banUserDto.banReason,
+      isBanned: banUserDto.isBanned,
+    };
+    return this.usersRepository.banUserById(id, banInfo);
   }
 }
