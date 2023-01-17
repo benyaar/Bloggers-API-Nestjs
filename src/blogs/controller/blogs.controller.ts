@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  NotFoundException,
   Param,
   Post,
   Put,
@@ -16,8 +15,6 @@ import { BlogInputDTO, PostInputDTO } from '../dto/input-blog.dto';
 import { BlogQueryRepository } from '../repository/blog.query-repository';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { BlogsViewModel } from '../schemas/blogs.schema';
-import { PostsService } from '../../post/application/posts.service';
-import { PostQueryRepository } from '../../post/repository/post.query-repository';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { Token } from '../../decorators/token.decorator';
 
