@@ -1,9 +1,8 @@
-import { IsIn, Length } from 'class-validator';
+import { IsBoolean, IsIn, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
 export class BanUserDto {
-  @Transform(({ value }: TransformFnParams) => value?.trim())
-  @Length(2)
+  @IsBoolean()
   isBanned: boolean;
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(20)
