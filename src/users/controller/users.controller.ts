@@ -20,7 +20,7 @@ import {
 } from '../../helpers/dto/helpers.dto';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 
-@Controller('users')
+@Controller('/sa/users')
 export class UsersController {
   constructor(
     public usersService: UsersService,
