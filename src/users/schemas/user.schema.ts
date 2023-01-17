@@ -12,6 +12,15 @@ export class EmailConfirmation {
   isConfirmed: boolean;
 }
 
+export class BanInfo {
+  @Prop()
+  banDate: Date | null;
+  @Prop()
+  banReason: string | null;
+  @Prop()
+  isBanned: boolean;
+}
+
 @Schema()
 export class User {
   @Prop()
@@ -26,6 +35,8 @@ export class User {
   createdAt: Date;
   @Prop()
   emailConfirmation: EmailConfirmation;
+  @Prop()
+  banInfo: BanInfo;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -41,6 +52,11 @@ export class UserViewType {
       confirmationCode: string;
       expirationDate: Date;
       isConfirmed: boolean;
+    },
+    public banInfo: {
+      banDate: Date | null;
+      banReason: string | null;
+      isBanned: boolean;
     },
   ) {}
 }

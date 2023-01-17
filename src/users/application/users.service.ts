@@ -61,6 +61,7 @@ export class UsersService {
         }),
         isConfirmed: false,
       },
+      { banDate: null, banReason: null, isBanned: false },
     );
     await this.usersRepository.createUser(createNewUser);
     const { passwordHash, emailConfirmation, ...userViewModal } = createNewUser;
@@ -72,9 +73,11 @@ export class UsersService {
     );
     return userViewModal;
   }
+
   async deleteUserById(id: string) {
     return this.usersRepository.deleteUserById(id);
   }
+
   async findUserByLoginOrEmail(loginOrEmail: string) {
     return this.usersQueryRepository.findUserByLoginOrEmail(loginOrEmail);
   }
@@ -104,6 +107,7 @@ export class UsersService {
     );
     return;
   }
+
   async findUserByConfirmCode(code: string) {
     const findUserByConfirmCode =
       await this.usersQueryRepository.findUserByConfirmCode(code);
