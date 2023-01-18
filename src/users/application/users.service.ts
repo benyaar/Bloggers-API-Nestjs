@@ -167,13 +167,18 @@ export class UsersService {
   }
 
   async banUserById(id: string, banUserDto: BanUserDto) {
+    const banUserInfo: BanInfo = banUserDto.isBanned
+      ? {
+          banDate: new Date(),
+          banReason: banUserDto.banReason,
+          isBanned: banUserDto.isBanned,
+        }
+      : { banDate: null, banReason: null, isBanned: banUserDto.isBanned };
+    // user = ban
+    // no show likes, comments, delete devices
     const findUserById = await this.findUserById(id);
     if (!findUserById) throw new NotFoundException([]);
-    const banInfo: BanInfo = {
-      banDate: new Date(),
-      banReason: banUserDto.banReason,
-      isBanned: banUserDto.isBanned,
-    };
-    return this.usersRepository.banUserById(id, banInfo);
+
+    return this.usersRepository.banUserById(id, banUserInfo);
   }
 }

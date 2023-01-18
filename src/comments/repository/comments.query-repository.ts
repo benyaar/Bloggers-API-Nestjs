@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { PaginationHelp } from '../../helpers/pagination';
 import { Inject, Injectable } from '@nestjs/common';
+import { User, UsersDocument } from '../../users/schemas/user.schema';
 
 const options = {
   _id: 0,
@@ -20,7 +21,10 @@ export class CommentsQueryRepository {
     @InjectModel(Comment.name)
     private readonly commentsModel: Model<CommentsDocument>,
     private pagination: PaginationHelp,
+    @InjectModel(User.name)
+    private readonly userModel: Model<UsersDocument>,
   ) {}
+
   async findAllComments(
     parentId: string,
     paginationInputDTO: PaginationInputDTO,
@@ -44,16 +48,23 @@ export class CommentsQueryRepository {
       findCommentsWithLikes,
     );
   }
+
   async findCommentById(id: string) {
     return this.commentsModel.findOne({ id }, options);
   }
+
   async findCommentByIdWithLikes(id: string, userId: string) {
-    const findCommentById = await this.commentsModel.find({ id }, options);
+    const bannedUsersIds = await this.userModel.distinct('id', {
+      'banInfo.isBanned': true,
+    });
+    const findCommentById = await this.commentsModel.find(
+      { id, userId: { $nin: bannedUsersIds } },
+      options,
+    );
     const commentWithLike = await this.pagination.commentsWithLikeStatus(
       findCommentById,
       userId,
     );
     return commentWithLike[0];
-    return true;
   }
 }

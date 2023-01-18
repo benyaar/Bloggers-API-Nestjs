@@ -17,6 +17,7 @@ import { JWT } from '../constants';
 import { AuthRepository } from '../repository/auth.repository';
 import { IpDto } from '../dto/ip.dto';
 import jwt from 'jsonwebtoken';
+import { UserViewType } from '../../users/schemas/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -40,10 +41,11 @@ export class AuthService {
     return findUserByLoginOrEmail;
   }
 
-  async login(userId: any, ip: string, title: string) {
+  async login(user: UserViewType, ip: string, title: string) {
+    if (user.banInfo.isBanned) throw new UnauthorizedException([]);
     const deviceId = new ObjectId().toString();
-    const createJwt = await this.createJwtPair(userId, ip, title, deviceId);
-    await this.createUserSession(userId, ip, title, deviceId);
+    const createJwt = await this.createJwtPair(user.id, ip, title, deviceId);
+    await this.createUserSession(user.id, ip, title, deviceId);
     return createJwt;
   }
   async createJwtPair(

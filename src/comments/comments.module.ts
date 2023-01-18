@@ -11,6 +11,7 @@ import {
   LikeStatus,
   LikeStatusSchema,
 } from '../post/schemas/like-status.schema';
+import { User, UserSchema } from '../users/schemas/user.schema';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import {
     MongooseModule.forFeature([
       { name: Comment.name, schema: CommentsSchema },
       { name: LikeStatus.name, schema: LikeStatusSchema },
+      { name: User.name, schema: UserSchema },
     ]),
   ],
   controllers: [CommentsController],

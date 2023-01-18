@@ -40,7 +40,7 @@ export class AuthController {
   ) {
     const ip = req.ip;
     const title = req.headers['user-agent'] || 'browser not found';
-    const JwtPair = await this.authService.login(user.id, ip, title);
+    const JwtPair = await this.authService.login(user, ip, title);
     response.cookie('refreshToken', JwtPair.refreshToken, {
       httpOnly: true,
       secure: true,
