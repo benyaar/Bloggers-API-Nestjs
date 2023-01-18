@@ -21,7 +21,7 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from '../../auth/decorator/request.decorator';
 import { UserViewType } from '../../users/schemas/user.schema';
 
-@Controller('bloggers/blogs')
+@Controller('blogger/blogs')
 export class BlogsController {
   constructor(
     public blogsService: BlogsService,
