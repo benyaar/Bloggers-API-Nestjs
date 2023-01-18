@@ -45,12 +45,18 @@ export class PaginationHelp {
     } else {
       searchParentId = 'parentId';
     }
-
+    let searchUserId;
+    if (!userId) {
+      searchUserId = 'null';
+    } else {
+      searchUserId = 'userId';
+    }
     const findAndSorteDocuments = await modelMongo
       .find(
         {
           name: { $regex: searchNameTerm, $options: 'i' },
           [searchParentId]: parentId,
+          [searchUserId]: userId,
         },
         options,
       )

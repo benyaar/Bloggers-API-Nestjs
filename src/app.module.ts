@@ -11,6 +11,7 @@ import { CommentsModule } from './comments/comments.module';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from './email/email.module';
+import { BloggersModule } from './bloggers/bloggers.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { EmailModule } from './email/email.module';
       },
     }),
     EmailModule,
+    BloggersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

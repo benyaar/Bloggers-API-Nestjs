@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Model, Types } from 'mongoose';
-import { BlogInputDTO } from '../dto/input-blog.dto';
+import { CreateBlogDto } from '../dto/input-blog.dto';
 import * as mongoose from 'mongoose';
 import ObjectId = mongoose.Types.ObjectId;
 
@@ -16,15 +16,22 @@ export class Blog {
   websiteUrl: string;
   @Prop()
   createdAt: Date;
+  @Prop()
+  userId: string;
 
   checkName(name) {
     return `${name} + hello `;
   }
 
-  static createNewBlog(blog: BlogInputDTO, BlogModel: BlogsModelType) {
+  static createNewBlog(
+    blog: CreateBlogDto,
+    BlogModel: BlogsModelType,
+    userId: string,
+  ) {
     const newBlog = new BlogModel(blog);
     newBlog.id = new ObjectId();
     newBlog.createdAt = new Date();
+    newBlog.userId = userId;
     return newBlog;
   }
 }
@@ -39,8 +46,9 @@ BlogSchema.statics = {
 
 export type BlogModelStaticType = {
   createNewBlog: (
-    blog: BlogInputDTO,
+    blog: CreateBlogDto,
     BlogModel: BlogsModelType,
+    userId: string,
   ) => BlogsDocument;
 };
 export type BlogsDocument = HydratedDocument<Blog>;

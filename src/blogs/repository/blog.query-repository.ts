@@ -19,12 +19,12 @@ export class BlogQueryRepository {
     public blogsModel: Model<BlogsDocument>,
     private pagination: PaginationHelp,
   ) {}
-  async findAllBlogs(paginationInputType: PaginationInputDTO) {
+  async findAllBlogs(paginationInputType: PaginationInputDTO, userId: string) {
     const findBlogs = await this.pagination.pagination(
       ' ',
       paginationInputType,
       this.blogsModel,
-      null,
+      userId,
     );
 
     return this.pagination.paginationResult(

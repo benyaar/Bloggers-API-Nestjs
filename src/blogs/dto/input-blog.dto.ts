@@ -1,7 +1,7 @@
 import { IsUrl, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
-export class BlogInputDTO {
+export class CreateBlogDto {
   @Length(1, 15)
   @Transform(({ value }: TransformFnParams) => value?.trim())
   name: string;

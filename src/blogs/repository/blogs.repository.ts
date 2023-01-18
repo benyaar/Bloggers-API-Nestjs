@@ -7,7 +7,7 @@ import {
   BlogsModelType,
   BlogsViewModel,
 } from '../schemas/blogs.schema';
-import { BlogInputDTO } from '../dto/input-blog.dto';
+import { CreateBlogDto } from '../dto/input-blog.dto';
 import * as mongoose from 'mongoose';
 import ObjectId = mongoose.Types.ObjectId;
 
@@ -22,7 +22,7 @@ export class BlogsRepository {
   }
   async updateBlogById(
     blogId: string,
-    blog: BlogInputDTO,
+    blog: CreateBlogDto,
   ): Promise<BlogsDocument> {
     return this.blogModel.findOneAndUpdate(
       { id: blogId },
