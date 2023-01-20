@@ -30,6 +30,9 @@ export class CommentsQueryRepository {
     paginationInputDTO: PaginationInputDTO,
     userId: string | null,
   ) {
+    const bannedUsersIds = await this.userModel.distinct('id', {
+      'banInfo.isBanned': true,
+    });
     const findAndSortedDocuments = await this.pagination.pagination(
       parentId,
       paginationInputDTO,
@@ -40,6 +43,7 @@ export class CommentsQueryRepository {
     const findCommentsWithLikes = await this.pagination.commentsWithLikeStatus(
       findAndSortedDocuments.findAndSorteDocuments,
       userId,
+      bannedUsersIds,
     );
     return this.pagination.paginationResult(
       findAndSortedDocuments.pageNumber,

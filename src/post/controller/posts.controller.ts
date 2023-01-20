@@ -34,11 +34,11 @@ export class PostsController {
     public postQueryRepository: PostQueryRepository,
   ) {}
 
-  @UseGuards(BasicAuthGuard)
-  @Post()
-  async createPost(@Body() createPostDto: CreatePostDto) {
-    return this.postsService.createNewPost(createPostDto);
-  }
+  // @UseGuards(BasicAuthGuard)
+  // @Post()
+  // async createPost(@Body() createPostDto: CreatePostDto) {
+  //   return this.postsService.createNewPost(createPostDto);
+  // }
 
   @Get()
   async findAllPosts(
