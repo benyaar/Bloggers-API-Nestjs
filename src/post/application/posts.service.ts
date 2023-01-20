@@ -1,9 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PostsRepository } from '../repository/posts.repository';
-import { PostDBType, PostViewType } from '../schemas/post.schema';
+import { PostDBType } from '../schemas/post.schema';
 import * as mongoose from 'mongoose';
 import ObjectId = mongoose.Types.ObjectId;
-import { CreatePostDto } from '../dto/create-post.dto';
+import { CreatePostDto, CreatePostDtoWithUserId } from '../dto/create-post.dto';
 import { PostQueryRepository } from '../repository/post.query-repository';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { CommentsService } from '../../comments/application/comments.service';
@@ -20,7 +20,7 @@ export class PostsService {
     private commentsService: CommentsService,
     private commentsQueryRepository: CommentsQueryRepository,
   ) {}
-  async createNewPost(createPostDto: CreatePostDto) {
+  async createNewPost(createPostDto: CreatePostDtoWithUserId) {
     const findBlogById = await this.postQueryRepository.findBlogById(
       createPostDto.blogId,
     );
@@ -39,6 +39,7 @@ export class PostsService {
       findBlogById.id,
       findBlogById.name,
       new Date(),
+      createPostDto.userId,
       {
         likesCount: 0,
         dislikesCount: 0,
@@ -47,7 +48,7 @@ export class PostsService {
       },
     );
     await this.postsRepository.createNewPost(newPost);
-    const { parentId, ...newPostcopy } = newPost;
+    const { parentId, userId, ...newPostcopy } = newPost;
     return newPostcopy;
   }
   async updatePostById(id: string, inputPostDTO: CreatePostDto) {

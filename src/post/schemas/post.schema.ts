@@ -1,5 +1,3 @@
-import * as mongoose from 'mongoose';
-import ObjectId = mongoose.Types.ObjectId;
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
@@ -35,6 +33,8 @@ export class Post {
   @Prop()
   createdAt: Date;
   @Prop()
+  userId: string;
+  @Prop()
   extendedLikesInfo: LikesInfo;
 }
 
@@ -50,6 +50,7 @@ export class PostDBType {
     public parentId: string,
     public blogName: string,
     public createdAt: Date,
+    public userId: string,
     public extendedLikesInfo: {
       likesCount: number;
       dislikesCount: number;

@@ -51,30 +51,32 @@ export class BlogsController {
     return this.queryBlogRepository.findBlogById(id);
   }
 
-  @UseGuards(BasicAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
   @HttpCode(204)
   async updateBlogById(
     @Param('id') id: string,
     @Body() blogInputType: CreateBlogDto,
+    @User() user: UserViewType,
   ) {
-    return await this.blogsService.updateBlogById(id, blogInputType);
+    return await this.blogsService.updateBlogById(id, blogInputType, user.id);
   }
 
-  @UseGuards(BasicAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @HttpCode(204)
-  async deleteBlogById(@Param('id') id: string) {
-    return this.blogsService.deleteBlogById(id);
+  async deleteBlogById(@Param('id') id: string, @User() user: UserViewType) {
+    return this.blogsService.deleteBlogById(id, user.id);
   }
 
-  @UseGuards(BasicAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post(':id/posts')
   async createPostByBlodId(
     @Param('id') id: string,
     @Body() postInputDTO: PostInputDTO,
+    @User() user: UserViewType,
   ) {
-    return this.blogsService.createPostByBlogId(id, postInputDTO);
+    return this.blogsService.createPostByBlogId(id, postInputDTO, user.id);
   }
 
   @Get(':id/posts')

@@ -40,24 +40,28 @@ export class BlogsService {
     );
   }
 
-  async updateBlogById(blogId: string, blog: CreateBlogDto) {
+  async updateBlogById(blogId: string, blog: CreateBlogDto, userId: string) {
     const findBlogById = await this.blogQueryRepository.findBlogById(blogId);
     if (!findBlogById) throw new NotFoundException([]);
-    return this.blogsRepository.updateBlogById(blogId, blog);
+    return this.blogsRepository.updateBlogById(blogId, blog, userId);
   }
 
-  async deleteBlogById(id: string) {
+  async deleteBlogById(id: string, userId: string) {
     const findBlogById = await this.blogQueryRepository.findBlogById(id);
 
     if (!findBlogById) throw new NotFoundException([]);
-    await this.blogsRepository.deleteBlogById(id);
+    await this.blogsRepository.deleteBlogById(id, userId);
     return;
   }
 
-  async createPostByBlogId(id: string, postInputDTO: PostInputDTO) {
+  async createPostByBlogId(
+    id: string,
+    postInputDTO: PostInputDTO,
+    userId: string,
+  ) {
     const findBlogById = await this.blogQueryRepository.findBlogById(id);
     if (!findBlogById) throw new NotFoundException([]);
-    const postData = { ...postInputDTO, blogId: id };
+    const postData = { ...postInputDTO, blogId: id, userId: userId };
     return this.postsService.createNewPost(postData);
   }
 

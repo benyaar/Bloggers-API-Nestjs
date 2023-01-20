@@ -23,9 +23,10 @@ export class BlogsRepository {
   async updateBlogById(
     blogId: string,
     blog: CreateBlogDto,
+    userId: string,
   ): Promise<BlogsDocument> {
     return this.blogModel.findOneAndUpdate(
-      { id: blogId },
+      { id: blogId, userId: userId },
       {
         name: blog.name,
         description: blog.description,
@@ -33,7 +34,7 @@ export class BlogsRepository {
       },
     );
   }
-  async deleteBlogById(id: string) {
-    return this.blogModel.deleteOne({ id });
+  async deleteBlogById(id: string, userId: string) {
+    return this.blogModel.deleteOne({ id, userId: userId });
   }
 }
