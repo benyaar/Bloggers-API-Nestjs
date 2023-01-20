@@ -141,16 +141,19 @@ export class PaginationHelp {
   async commentsWithLikeStatus(
     findAndSortedComments: any,
     userId: string | null,
+    bannedUsersId: string[],
   ) {
     const commentWithLikeStatus = [];
     for (const comment of findAndSortedComments) {
       const countLikes = await this.likeStatusModel.countDocuments({
         parentId: comment.id,
         likeStatus: 'Like',
+        userId: { $nin: bannedUsersId },
       });
       const countDislikes = await this.likeStatusModel.countDocuments({
         parentId: comment.id,
         likeStatus: 'Dislike',
+        userId: { $nin: bannedUsersId },
       });
       const findCommentWithLikesByUserId = await this.likeStatusModel.findOne({
         parentId: comment.id,

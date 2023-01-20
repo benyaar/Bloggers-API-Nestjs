@@ -64,6 +64,7 @@ export class CommentsQueryRepository {
     const commentWithLike = await this.pagination.commentsWithLikeStatus(
       findCommentById,
       userId,
+      bannedUsersIds,
     );
     return commentWithLike[0];
   }
