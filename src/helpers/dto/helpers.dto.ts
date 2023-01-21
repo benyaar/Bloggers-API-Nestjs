@@ -17,4 +17,5 @@ export class PaginationUserInputDTO {
   pageSize?: string = '10';
   sortBy?: string = 'createdAt';
   sortDirection?: string = 'desc';
+  banStatus?: string = 'all';
 }

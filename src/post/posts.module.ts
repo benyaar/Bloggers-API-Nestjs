@@ -14,6 +14,7 @@ import { PaginationModule } from '../helpers/pagination.module';
 import { BlogIdValidator } from './decorators/blog-id-validator';
 import { BlogsModule } from '../blogs/blogs.module';
 import { BlogQueryRepository } from '../blogs/repository/blog.query-repository';
+import { User, UserSchema } from '../users/schemas/user.schema';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { BlogQueryRepository } from '../blogs/repository/blog.query-repository';
     MongooseModule.forFeature([
       { name: Post.name, schema: PostSchema },
       { name: Blog.name, schema: BlogSchema },
+      { name: User.name, schema: UserSchema },
       { name: LikeStatus.name, schema: LikeStatusSchema },
     ]),
   ],

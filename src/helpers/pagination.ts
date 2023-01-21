@@ -116,16 +116,22 @@ export class PaginationHelp {
     };
   }
 
-  async postWithLikeStatus(findAndSortedPost: any, userId: string | null) {
+  async postWithLikeStatus(
+    findAndSortedPost: any,
+    userId: string | null,
+    bannedUsersId: string[],
+  ) {
     const postWithLikeStatus = [];
     for (const post of findAndSortedPost) {
       const countLikes = await this.likeStatusModel.countDocuments({
         parentId: post.id,
         likeStatus: 'Like',
+        userId: { $nin: bannedUsersId },
       });
       const countDislikes = await this.likeStatusModel.countDocuments({
         parentId: post.id,
         likeStatus: 'Dislike',
+        userId: { $nin: bannedUsersId },
       });
       const findPostWithLikesByUserId = await this.likeStatusModel.findOne({
         parentId: post.id,

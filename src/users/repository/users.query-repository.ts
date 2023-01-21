@@ -32,12 +32,19 @@ export class UsersQueryRepository {
     const pageNumber: number = +paginationInputDTO.pageNumber;
     const pageSize: number = +paginationInputDTO.pageSize;
     let sortDirection: any = paginationInputDTO.sortDirection;
+    let banStatus: string | boolean | null = paginationInputDTO.banStatus;
 
+    let isBanned = 'banInfo.isBanned';
     if (sortDirection !== ('asc' || 'desc')) sortDirection = 'desc';
-
+    if (banStatus === 'banned') banStatus = true;
+    if (banStatus === 'notBanned') banStatus = false;
+    if (banStatus === 'all') isBanned = null;
+    console.log(banStatus);
+    console.log(isBanned);
     const findAndSortedUsers = await this.usersModel
       .find(
         {
+          [isBanned]: banStatus,
           $or: [
             { login: { $regex: searchLoginTerm, $options: 'i' } },
             { email: { $regex: searchEmailTerm, $options: 'i' } },
@@ -55,6 +62,7 @@ export class UsersQueryRepository {
         { login: { $regex: searchLoginTerm, $options: 'i' } },
         { email: { $regex: searchEmailTerm, $options: 'i' } },
       ],
+      [isBanned]: banStatus,
     });
 
     return this.pagination.paginationResult(
