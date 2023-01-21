@@ -4,6 +4,13 @@ import { CreateBlogDto } from '../dto/input-blog.dto';
 import * as mongoose from 'mongoose';
 import ObjectId = mongoose.Types.ObjectId;
 
+export class BlogOwnerInfo {
+  @Prop()
+  userId: string;
+  @Prop()
+  userLogin: string;
+}
+
 @Schema()
 export class Blog {
   @Prop()
@@ -17,7 +24,7 @@ export class Blog {
   @Prop()
   createdAt: Date;
   @Prop()
-  userId: string;
+  blogOwnerInfo: BlogOwnerInfo;
 
   checkName(name) {
     return `${name} + hello `;
@@ -27,11 +34,12 @@ export class Blog {
     blog: CreateBlogDto,
     BlogModel: BlogsModelType,
     userId: string,
+    userLogin: string,
   ) {
     const newBlog = new BlogModel(blog);
     newBlog.id = new ObjectId();
     newBlog.createdAt = new Date();
-    newBlog.userId = userId;
+    newBlog.blogOwnerInfo = { userId, userLogin };
     return newBlog;
   }
 }
@@ -49,6 +57,7 @@ export type BlogModelStaticType = {
     blog: CreateBlogDto,
     BlogModel: BlogsModelType,
     userId: string,
+    userLogin: string,
   ) => BlogsDocument;
 };
 export type BlogsDocument = HydratedDocument<Blog>;

@@ -11,6 +11,7 @@ const options = {
   postId: 0,
   emailConfirmation: 0,
   __v: 0,
+  userLogin: 0,
 };
 @Injectable()
 export class BlogQueryRepository {
@@ -19,12 +20,17 @@ export class BlogQueryRepository {
     public blogsModel: Model<BlogsDocument>,
     private pagination: PaginationHelp,
   ) {}
-  async findAllBlogs(paginationInputType: PaginationInputDTO, userId: string) {
+  async findAllBlogs(
+    paginationInputType: PaginationInputDTO,
+    userId: string | null,
+    superAdmin: string,
+  ) {
     const findBlogs = await this.pagination.pagination(
       ' ',
       paginationInputType,
       this.blogsModel,
       userId,
+      superAdmin,
     );
 
     return this.pagination.paginationResult(

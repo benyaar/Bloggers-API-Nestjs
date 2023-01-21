@@ -43,7 +43,7 @@ export class BlogsController {
     @Query() paginationInputType: PaginationInputDTO,
     @User() user: UserViewType,
   ) {
-    return this.queryBlogRepository.findAllBlogs(paginationInputType, user.id);
+    return this.blogsService.findAllBlogs(paginationInputType, user);
   }
 
   @Get(':id')

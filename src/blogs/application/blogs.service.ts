@@ -27,7 +27,12 @@ export class BlogsService {
     blog: CreateBlogDto,
     user: UserViewType,
   ): Promise<BlogsViewModel> {
-    const newBlog = this.BlogModel.createNewBlog(blog, this.BlogModel, user.id);
+    const newBlog = this.BlogModel.createNewBlog(
+      blog,
+      this.BlogModel,
+      user.id,
+      user.login,
+    );
 
     const savedBlog = await this.blogsRepository.saveBlogInDB(newBlog);
     if (!savedBlog) throw new BadRequestException();
@@ -77,6 +82,17 @@ export class BlogsService {
       paginationInputDTO,
       id,
       userId,
+    );
+  }
+
+  async findAllBlogs(
+    paginationInputType: PaginationInputDTO,
+    user: UserViewType,
+  ) {
+    return this.blogQueryRepository.findAllBlogs(
+      paginationInputType,
+      user.id,
+      'user',
     );
   }
 }

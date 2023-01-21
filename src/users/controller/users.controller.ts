@@ -22,7 +22,7 @@ import {
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { BanUserDto } from '../dto/ban-user.dto';
 
-@Controller('/sa/users')
+@Controller('/sa')
 export class UsersController {
   constructor(
     public usersService: UsersService,
@@ -30,17 +30,17 @@ export class UsersController {
   ) {}
 
   @UseGuards(BasicAuthGuard)
-  @Post()
+  @Post('users')
   async createUser(@Body() inputUserDto: InputUserDto) {
     return this.usersService.createUser(inputUserDto);
   }
 
-  @Get()
+  @Get('users')
   async findAllUsers(@Query() paginationInputDTO: PaginationUserInputDTO) {
     return this.queryUserRepository.findAllUsers(paginationInputDTO);
   }
 
-  @Get(':id')
+  @Get('users/:id')
   async findUserById(@Param('id') id: string) {
     const findUserById = await this.queryUserRepository.findUserById(id);
     if (!findUserById) throw new NotFoundException([]);
@@ -48,7 +48,7 @@ export class UsersController {
   }
 
   @UseGuards(BasicAuthGuard)
-  @Delete(':id')
+  @Delete('users/:id')
   @HttpCode(204)
   async deleteUserById(@Param('id') id: string) {
     const findUserById = await this.queryUserRepository.findUserById(id);
@@ -57,9 +57,16 @@ export class UsersController {
   }
 
   @UseGuards(BasicAuthGuard)
-  @Put(':id/ban')
+  @Put('users/:id/ban')
   @HttpCode(204)
   async banUserById(@Param('id') id: string, @Body() banUserDto: BanUserDto) {
     return this.usersService.banUserById(id, banUserDto);
+  }
+
+  @UseGuards(BasicAuthGuard)
+  @Get('blogs')
+  @HttpCode(200)
+  async findBlogsWithOwnerId(@Body() paginationDto: PaginationInputDTO) {
+    return this.usersService.findBlogsWithOwnerId(paginationDto);
   }
 }

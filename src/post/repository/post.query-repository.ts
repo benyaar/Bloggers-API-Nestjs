@@ -35,6 +35,7 @@ export class PostQueryRepository {
       paginationInputDTO,
       this.postsModel,
       userId,
+      'user',
     );
     const findPostsWithLikes = await this.pagination.postWithLikeStatus(
       findAndSorteDocuments.findAndSorteDocuments,
@@ -60,6 +61,7 @@ export class PostQueryRepository {
       paginationInputDTO,
       this.postsModel,
       userId,
+      'user',
     );
 
     const findPostsWithLikes = await this.pagination.postWithLikeStatus(

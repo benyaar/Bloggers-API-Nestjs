@@ -38,6 +38,7 @@ export class CommentsQueryRepository {
       paginationInputDTO,
       this.commentsModel,
       userId,
+      'user',
     );
 
     const findCommentsWithLikes = await this.pagination.commentsWithLikeStatus(

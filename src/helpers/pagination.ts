@@ -11,7 +11,16 @@ import {
 } from '../post/schemas/like-status.schema';
 import { Model } from 'mongoose';
 
-const options = {
+const optionsForUser = {
+  _id: 0,
+  passwordHash: 0,
+  parentId: 0,
+  emailConfirmation: 0,
+  __v: 0,
+  userId: 0,
+  blogOwnerInfo: 0,
+};
+const optionsForSa = {
   _id: 0,
   passwordHash: 0,
   parentId: 0,
@@ -31,6 +40,7 @@ export class PaginationHelp {
     paginationInputDTO: PaginationInputDTO,
     modelMongo: any,
     userId: string | null,
+    superAdmin: string,
   ) {
     const searchNameTerm: string = paginationInputDTO.searchNameTerm;
     const sortBy: string = paginationInputDTO.sortBy;
@@ -39,6 +49,13 @@ export class PaginationHelp {
     let sortDirection: any = paginationInputDTO.sortDirection;
 
     if (sortDirection !== ('asc' || 'desc')) sortDirection = 'desc';
+
+    let options;
+    if (superAdmin === 'admin') {
+      options = optionsForSa;
+    } else {
+      options = optionsForUser;
+    }
 
     let searchParentId;
     if (!parentId) {

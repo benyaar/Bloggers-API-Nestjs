@@ -21,6 +21,8 @@ import { EmailService } from '../../email/email.service';
 import { CreateNewPasswordDto } from '../../auth/dto/create-new-password.dto';
 import { RecoveryCodeType } from '../schemas/recovery-code.schema';
 import { BanUserDto } from '../dto/ban-user.dto';
+import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
+import { BlogQueryRepository } from '../../blogs/repository/blog.query-repository';
 
 @Injectable()
 export class UsersService {
@@ -28,6 +30,7 @@ export class UsersService {
     private usersRepository: UsersRepository,
     private usersQueryRepository: UsersQueryRepository,
     private emailService: EmailService,
+    private blogQueryRepository: BlogQueryRepository,
   ) {}
   async createUser(inputUserDTO: InputUserDto) {
     const findUserByLogin = await this.usersQueryRepository.findUserByLogin(
@@ -180,5 +183,13 @@ export class UsersService {
     if (!findUserById) throw new NotFoundException([]);
 
     return this.usersRepository.banUserById(id, banUserInfo);
+  }
+
+  async findBlogsWithOwnerId(paginationDto: PaginationInputDTO) {
+    return await this.blogQueryRepository.findAllBlogs(
+      paginationDto,
+      null,
+      'admin',
+    );
   }
 }
