@@ -11,7 +11,7 @@ const options = {
   postId: 0,
   emailConfirmation: 0,
   __v: 0,
-  userLogin: 0,
+  blogOwnerInfo: 0,
 };
 @Injectable()
 export class BloggersQueryRepository {

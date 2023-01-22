@@ -86,6 +86,7 @@ export class PaginationHelp {
     const getCountDocuments = await modelMongo.countDocuments({
       [searchParentId]: parentId,
       name: { $regex: searchNameTerm, $options: 'i' },
+      'blogOwnerInfo.userId': userId,
     });
 
     return {
@@ -141,7 +142,7 @@ export class PaginationHelp {
         {
           parentId: post.id,
           likeStatus: 'Like',
-          $and: [{ userId: userId }, { userId: { $nin: bannedUsersId } }],
+          userId: { $nin: bannedUsersId },
         },
         { _id: 0, __v: 0, parentId: 0, likeStatus: 0 },
         { sort: { _id: -1 }, limit: 3 },

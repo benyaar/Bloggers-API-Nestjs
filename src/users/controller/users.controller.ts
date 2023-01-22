@@ -64,7 +64,7 @@ export class UsersController {
   }
 
   @UseGuards(BasicAuthGuard)
-  @Get('bloggers')
+  @Get('blogs')
   @HttpCode(200)
   async findBlogsWithOwnerId(@Query() paginationDto: PaginationInputDTO) {
     console.log(paginationDto);
