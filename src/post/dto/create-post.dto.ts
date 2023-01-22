@@ -13,9 +13,9 @@ export class CreatePostDto {
   @Transform(({ value }: TransformFnParams) => value?.trim())
   content: string;
   //@IsMongoIdBlogDecorator()
-  @Transform(({ value }: TransformFnParams) => value?.trim())
-  @Length(1, 30)
-  blogId: string;
+  //@Transform(({ value }: TransformFnParams) => value?.trim())
+  //@Length(1, 30)
+  //blogId: string;
 }
 
 export class CreatePostDtoWithUserId {
