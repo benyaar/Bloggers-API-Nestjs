@@ -70,13 +70,19 @@ export class PaginationHelp {
     } else {
       searchUserId = 'blogOwnerInfo.userId';
     }
+    let isBanned;
+    if (superAdmin === 'admin') {
+      isBanned = 'null';
+    } else {
+      isBanned = 'banInfo.isBanned';
+    }
     const findAndSorteDocuments = await modelMongo
       .find(
         {
           name: { $regex: searchNameTerm, $options: 'i' },
           [searchParentId]: parentId,
           [searchUserId]: userId,
-          'banInfo.isBanned': false,
+          [isBanned]: false,
         },
         options,
       )
