@@ -63,18 +63,18 @@ export class PaginationHelp {
     } else {
       searchParentId = 'parentId';
     }
-    // let searchUserId;
-    // if (!userId) {
-    //   searchUserId = 'null';
-    // } else {
-    //   searchUserId = 'blogOwnerInfo.';
-    // }
+    let searchUserId;
+    if (!userId) {
+      searchUserId = 'null';
+    } else {
+      searchUserId = 'blogOwnerInfo.userId';
+    }
     const findAndSorteDocuments = await modelMongo
       .find(
         {
           name: { $regex: searchNameTerm, $options: 'i' },
           [searchParentId]: parentId,
-          'blogOwnerInfo.userId': userId,
+          [searchUserId]: userId,
         },
         options,
       )
@@ -86,7 +86,7 @@ export class PaginationHelp {
     const getCountDocuments = await modelMongo.countDocuments({
       [searchParentId]: parentId,
       name: { $regex: searchNameTerm, $options: 'i' },
-      'blogOwnerInfo.userId': userId,
+      [searchUserId]: userId,
     });
 
     return {

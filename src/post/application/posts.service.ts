@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PostsRepository } from '../repository/posts.repository';
 import { PostDBType } from '../schemas/post.schema';
 import * as mongoose from 'mongoose';
@@ -56,13 +60,16 @@ export class PostsService {
     userId: string,
     createPostDto: CreatePostDto,
   ) {
-    const findPostById = await this.postQueryRepository.findPostById(id);
+    const findPostById = await this.postQueryRepository.findPostWithUser(id);
     if (!findPostById) throw new NotFoundException([]);
+    if (findPostById.userId !== userId) throw new ForbiddenException([]);
+
     return this.postsRepository.updatePostById(id, userId, createPostDto);
   }
   async deletePostById(id: string, userId: string) {
-    const findPostById = await this.postQueryRepository.findPostById(id);
+    const findPostById = await this.postQueryRepository.findPostWithUser(id);
     if (!findPostById) throw new NotFoundException([]);
+    if (findPostById.userId !== userId) throw new ForbiddenException([]);
     return this.postsRepository.deletePostById(id, userId);
   }
   async createNewCommentByPostId(

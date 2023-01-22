@@ -13,6 +13,7 @@ const options = {
   emailConfirmation: 0,
   __v: 0,
   parentId: 0,
+  userId: 0,
 };
 
 export class PostQueryRepository {
@@ -63,6 +64,9 @@ export class PostQueryRepository {
   }
   async findPostById(id: string) {
     return this.postsModel.findOne({ id }, options);
+  }
+  async findPostWithUser(id: string) {
+    return this.postsModel.findOne({ id });
   }
   async findBlogsPosts(
     paginationInputDTO: PaginationInputDTO,
