@@ -59,7 +59,7 @@ export class BloggersController {
     @Body() blogInputType: CreateBlogDto,
     @User() user: UserViewType,
   ) {
-    return await this.blogsService.updateBlogById(id, blogInputType, user.id);
+    return this.blogsService.updateBlogById(id, blogInputType, user.id);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -101,6 +101,8 @@ export class BloggersController {
     @Body() createPostDto: CreatePostDto,
     @User() user: UserViewType,
   ) {
+    console.log(id);
+    console.log(postId);
     return this.blogsService.updateBlogPostById(
       id,
       postId,

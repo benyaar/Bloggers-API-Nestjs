@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -47,16 +48,25 @@ export class BloggersService {
   }
 
   async updateBlogById(blogId: string, blog: CreateBlogDto, userId: string) {
-    const findBlogById = await this.blogQueryRepository.findBlogById(blogId);
+    const findBlogById = await this.blogQueryRepository.findBlogByIdWithUserId(
+      blogId,
+    );
     if (!findBlogById) throw new NotFoundException([]);
+    if (findBlogById.blogOwnerInfo.userId !== userId)
+      throw new ForbiddenException([]);
+
     return this.blogsRepository.updateBlogById(blogId, blog, userId);
   }
 
   async deleteBlogById(id: string, userId: string) {
-    const findBlogById = await this.blogQueryRepository.findBlogById(id);
+    const findBlogById = await this.blogQueryRepository.findBlogByIdWithUserId(
+      id,
+    );
 
     if (!findBlogById) throw new NotFoundException([]);
     await this.blogsRepository.deleteBlogById(id, userId);
+    if (findBlogById.blogOwnerInfo.userId !== userId)
+      throw new ForbiddenException([]);
     return;
   }
 

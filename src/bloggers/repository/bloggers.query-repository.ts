@@ -45,4 +45,7 @@ export class BloggersQueryRepository {
     if (!blog) throw new NotFoundException([]);
     return blog;
   }
+  async findBlogByIdWithUserId(id: string) {
+    return this.blogsModel.findOne({ id: id });
+  }
 }
