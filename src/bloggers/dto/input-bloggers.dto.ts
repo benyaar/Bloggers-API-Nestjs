@@ -27,6 +27,5 @@ export class PostInputDTO {
 
 export class BanBlogDto {
   @IsBoolean()
-  @Length(1)
   isBanned: boolean;
 }
