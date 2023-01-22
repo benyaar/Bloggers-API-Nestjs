@@ -36,7 +36,6 @@ export class PostsController {
     @Token() userId: string | null,
     @Query() paginationInputDTO: PaginationInputDTO,
   ) {
-    console.log(userId);
     return this.postQueryRepository.findAllPosts(paginationInputDTO, userId);
   }
 

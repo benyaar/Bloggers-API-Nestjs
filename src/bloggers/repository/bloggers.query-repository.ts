@@ -1,10 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { BanInfo, Blog, BlogsDocument } from '../schemas/blogs.schema';
 import { Model } from 'mongoose';
-import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
+import {
+  PaginationBannedUserInputDTO,
+  PaginationInputDTO,
+  PaginationUserInputDTO,
+} from '../../helpers/dto/helpers.dto';
 import { PaginationHelp } from '../../helpers/pagination';
 import { BanBlogDto } from '../dto/input-bloggers.dto';
+import { UsersQueryRepository } from '../../users/repository/users.query-repository';
 
 const options = {
   _id: 0,
@@ -21,6 +30,7 @@ export class BloggersQueryRepository {
     @InjectModel(Blog.name)
     public blogsModel: Model<BlogsDocument>,
     private pagination: PaginationHelp,
+    private userQueryRepository: UsersQueryRepository,
   ) {}
   async findAllBlogs(
     paginationInputType: PaginationInputDTO,
@@ -66,6 +76,30 @@ export class BloggersQueryRepository {
     return this.blogsModel.updateOne(
       { id: id },
       { $set: { banInfo: banBlogInfo } },
+    );
+  }
+
+  async getAllBannedUserForBlog(
+    id: string,
+    inputDTO: PaginationUserInputDTO,
+    userId: string,
+  ) {
+    const findBlogById = await this.findBlogByIdWithUserId(id);
+    if (!findBlogById) throw new NotFoundException([]);
+
+    if (findBlogById.blogOwnerInfo.userId !== userId)
+      throw new ForbiddenException([]);
+
+    const findAllBannedUser = await this.pagination.getAllBannedUserForBlog(
+      id,
+      inputDTO,
+      userId,
+    );
+    return this.pagination.paginationResult(
+      findAllBannedUser.pageNumber,
+      findAllBannedUser.pageSize,
+      findAllBannedUser.getCountDocuments,
+      findAllBannedUser.findAndSortedDocuments,
     );
   }
 }

@@ -1,4 +1,4 @@
-import { IsOptional } from 'class-validator';
+import { IsEmpty, IsOptional } from 'class-validator';
 
 export class PaginationInputDTO {
   @IsOptional()
@@ -18,4 +18,13 @@ export class PaginationUserInputDTO {
   sortBy?: string = 'createdAt';
   sortDirection?: string = 'desc';
   banStatus?: string = 'all';
+}
+
+export class PaginationBannedUserInputDTO {
+  @IsOptional()
+  searchLoginTerm?: string = '';
+  pageNumber?: string = '1';
+  pageSize?: string = '10';
+  sortBy?: string = 'createdAt';
+  sortDirection?: string = 'desc';
 }

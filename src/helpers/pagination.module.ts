@@ -6,11 +6,16 @@ import {
   LikeStatus,
   LikeStatusSchema,
 } from '../post/schemas/like-status.schema';
+import {
+  BannedUser,
+  BannedUserSchema,
+} from '../bloggers/schemas/banned-User.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: LikeStatus.name, schema: LikeStatusSchema },
+      { name: BannedUser.name, schema: BannedUserSchema },
     ]),
   ],
   providers: [PaginationHelp],

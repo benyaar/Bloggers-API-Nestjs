@@ -2,7 +2,11 @@ import { BlogsViewModel } from '../bloggers/schemas/blogs.schema';
 import { PostViewType } from '../post/schemas/post.schema';
 import { UserViewType } from '../users/schemas/user.schema';
 import { CommentViewType } from '../comments/schema/comments.schema';
-import { PaginationInputDTO } from './dto/helpers.dto';
+import {
+  PaginationBannedUserInputDTO,
+  PaginationInputDTO,
+  PaginationUserInputDTO,
+} from './dto/helpers.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
@@ -10,6 +14,11 @@ import {
   LikeStatusDocument,
 } from '../post/schemas/like-status.schema';
 import { Model } from 'mongoose';
+import {
+  BannedUser,
+  BannedUserDocument,
+  BannedUserType,
+} from '../bloggers/schemas/banned-User.schema';
 
 const optionsForUser = {
   _id: 0,
@@ -29,12 +38,19 @@ const optionsForSa = {
   __v: 0,
   userId: 0,
 };
+const optionsForBannedUser = {
+  _id: 0,
+  __v: 0,
+  blogId: 0,
+};
 
 @Injectable()
 export class PaginationHelp {
   constructor(
     @InjectModel(LikeStatus.name)
     private readonly likeStatusModel: Model<LikeStatusDocument>,
+    @InjectModel(BannedUser.name)
+    private readonly bannedUserModel: Model<BannedUserDocument>,
   ) {}
   async pagination(
     parentId: string | null,
@@ -95,7 +111,7 @@ export class PaginationHelp {
       [searchParentId]: parentId,
       name: { $regex: searchNameTerm, $options: 'i' },
       [searchUserId]: userId,
-      'banInfo.isBanned': false,
+      [isBanned]: false,
     });
 
     return {
@@ -114,7 +130,8 @@ export class PaginationHelp {
       | BlogsViewModel[]
       | PostViewType[]
       | UserViewType[]
-      | CommentViewType[],
+      | CommentViewType[]
+      | BannedUserType[],
   ) {
     const pagesCount = Math.ceil(itemsCount / pageSize);
     return {
@@ -206,5 +223,45 @@ export class PaginationHelp {
       commentWithLikeStatus.push(comment);
     }
     return commentWithLikeStatus;
+  }
+
+  async getAllBannedUserForBlog(
+    id: string,
+    inputDTO: PaginationUserInputDTO,
+    userId: string,
+  ) {
+    const searchLoginTerm: string = inputDTO.searchLoginTerm;
+    const sortBy: string = inputDTO.sortBy;
+    const pageNumber: number = +inputDTO.pageNumber;
+    const pageSize: number = +inputDTO.pageSize;
+    let sortDirection: any = inputDTO.sortDirection;
+
+    if (sortDirection !== ('asc' || 'desc')) sortDirection = 'desc';
+    const findAndSortedDocuments = await this.bannedUserModel
+      .find(
+        {
+          name: { $regex: searchLoginTerm, $options: 'i' },
+          blogId: id,
+          'banInfo.isBanned': true,
+        },
+        optionsForBannedUser,
+      )
+      .lean()
+      .sort({ [sortBy]: sortDirection })
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+
+    const getCountDocuments = await this.bannedUserModel.countDocuments({
+      name: { $regex: searchLoginTerm, $options: 'i' },
+      blogId: id,
+      'banInfo.isBanned': true,
+    });
+
+    return {
+      pageNumber,
+      pageSize,
+      getCountDocuments,
+      findAndSortedDocuments,
+    };
   }
 }

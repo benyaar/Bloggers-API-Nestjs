@@ -10,7 +10,10 @@ import { Blog, BlogsModelType, BlogsViewModel } from '../schemas/blogs.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { BloggersQueryRepository } from '../repository/bloggers.query-repository';
 import { PostsService } from '../../post/application/posts.service';
-import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
+import {
+  PaginationBannedUserInputDTO,
+  PaginationInputDTO,
+} from '../../helpers/dto/helpers.dto';
 import { PostQueryRepository } from '../../post/repository/post.query-repository';
 import { UserViewType } from '../../users/schemas/user.schema';
 import { CreatePostDto } from '../../post/dto/create-post.dto';
@@ -142,12 +145,15 @@ export class BloggersService {
       throw new ForbiddenException([]);
 
     const findUser = await this.userQueryRepository.findUserById(id);
+    console.log(findUser);
     if (!findUser) throw new NotFoundException([]);
-    const banInfo = new BannedUserType(
-      new ObjectId().toString(),
-      banUserDto.blogId,
-      id,
-    );
+    const banInfo = new BannedUserType(id, findUser.login, banUserDto.blogId, {
+      isBanned: banUserDto.isBanned,
+      banDate: new Date(),
+      banReason: banUserDto.banReason,
+    });
+
+    console.log(banInfo);
     return this.blogsRepository.addUserInBan(banInfo);
   }
 }

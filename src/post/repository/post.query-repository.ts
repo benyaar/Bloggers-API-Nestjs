@@ -5,6 +5,7 @@ import { Post, PostsDocument } from '../schemas/post.schema';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { PaginationHelp } from '../../helpers/pagination';
 import { User, UsersDocument } from '../../users/schemas/user.schema';
+import { NotFoundException } from '@nestjs/common';
 
 const options = {
   _id: 0,
@@ -98,12 +99,17 @@ export class PostQueryRepository {
     );
   }
   async findPostByIdWithLike(id: string, userId: string | null) {
-    const findPostById = await this.postsModel.find({ id }, options);
+    const findsPostById = await this.postsModel.find({ id }, options);
+    const findPost = await this.postsModel.findOne({ id }, options);
+    const findBlogId = await this.blogsModel.findOne({ id: findPost.blogId });
+
+    if (findBlogId.banInfo.isBanned) throw new NotFoundException([]);
+
     const bannedUsersIds = await this.userModel.distinct('id', {
       'banInfo.isBanned': true,
     });
     const postWithLike = await this.pagination.postWithLikeStatus(
-      findPostById,
+      findsPostById,
       userId,
       bannedUsersIds,
     );

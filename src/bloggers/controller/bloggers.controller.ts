@@ -13,7 +13,11 @@ import {
 import { BloggersService } from '../application/bloggers.service';
 import { CreateBlogDto, PostInputDTO } from '../dto/input-bloggers.dto';
 import { BloggersQueryRepository } from '../repository/bloggers.query-repository';
-import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
+import {
+  PaginationBannedUserInputDTO,
+  PaginationInputDTO,
+  PaginationUserInputDTO,
+} from '../../helpers/dto/helpers.dto';
 import { BlogsViewModel } from '../schemas/blogs.schema';
 import { Token } from '../../decorators/token.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
@@ -130,5 +134,20 @@ export class BloggersController {
     @User() user: UserViewType,
   ) {
     return this.blogsService.addUserInBan(id, banUserDto, user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('users/blog/:id')
+  @HttpCode(200)
+  async getAllBannedUserForBlog(
+    @Param('id') id: string,
+    @Body() inputDTO: PaginationUserInputDTO,
+    @User() user: UserViewType,
+  ) {
+    return this.queryBlogRepository.getAllBannedUserForBlog(
+      id,
+      inputDTO,
+      user.id,
+    );
   }
 }
