@@ -76,6 +76,7 @@ export class PaginationHelp {
           name: { $regex: searchNameTerm, $options: 'i' },
           [searchParentId]: parentId,
           [searchUserId]: userId,
+          'banInfo.isBanned': false,
         },
         options,
       )
@@ -88,6 +89,7 @@ export class PaginationHelp {
       [searchParentId]: parentId,
       name: { $regex: searchNameTerm, $options: 'i' },
       [searchUserId]: userId,
+      'banInfo.isBanned': false,
     });
 
     return {

@@ -43,7 +43,10 @@ export class BloggersQueryRepository {
     );
   }
   async findBlogById(id: string) {
-    const blog = await this.blogsModel.findOne({ id: id }, options);
+    const blog = await this.blogsModel.findOne(
+      { id: id, 'banInfo.isBanned': false },
+      options,
+    );
     if (!blog) throw new NotFoundException([]);
     return blog;
   }
