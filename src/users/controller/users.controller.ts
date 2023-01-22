@@ -21,6 +21,7 @@ import {
 } from '../../helpers/dto/helpers.dto';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { BanUserDto } from '../dto/ban-user.dto';
+import { BanBlogDto } from '../../bloggers/dto/input-bloggers.dto';
 
 @Controller('/sa')
 export class UsersController {
@@ -67,7 +68,13 @@ export class UsersController {
   @Get('blogs')
   @HttpCode(200)
   async findBlogsWithOwnerId(@Query() paginationDto: PaginationInputDTO) {
-    console.log(paginationDto);
     return this.usersService.findBlogsWithOwnerId(paginationDto);
+  }
+
+  @UseGuards(BasicAuthGuard)
+  @Put('blogs/:id/ban')
+  @HttpCode(204)
+  async banBlogById(@Param('id') id: string, @Body() banDto: BanBlogDto) {
+    return this.usersService.banBlogById(id, banDto);
   }
 }

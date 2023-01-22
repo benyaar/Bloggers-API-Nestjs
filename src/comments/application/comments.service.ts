@@ -12,7 +12,6 @@ import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { CommentsQueryRepository } from '../repository/comments.query-repository';
 import { UserViewType } from '../../users/schemas/user.schema';
 import { LikeStatusType } from '../../post/schemas/like-status.schema';
-import { PostsRepository } from '../../post/repository/posts.repository';
 
 @Injectable()
 export class CommentsService {

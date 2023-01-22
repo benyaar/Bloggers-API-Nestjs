@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Blog, BlogsDocument } from '../schemas/blogs.schema';
+import { BanInfo, Blog, BlogsDocument } from '../schemas/blogs.schema';
 import { Model } from 'mongoose';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { PaginationHelp } from '../../helpers/pagination';
+import { BanBlogDto } from '../dto/input-bloggers.dto';
 
 const options = {
   _id: 0,
@@ -12,6 +13,7 @@ const options = {
   emailConfirmation: 0,
   __v: 0,
   blogOwnerInfo: 0,
+  banInfo: 0,
 };
 @Injectable()
 export class BloggersQueryRepository {
@@ -47,5 +49,20 @@ export class BloggersQueryRepository {
   }
   async findBlogByIdWithUserId(id: string) {
     return this.blogsModel.findOne({ id: id });
+  }
+
+  async banBlogById(id: string, banDto: BanBlogDto) {
+    const findBlogById = await this.findBlogByIdWithUserId(id);
+    if (!findBlogById) throw new NotFoundException([]);
+    const banBlogInfo: BanInfo = banDto.isBanned
+      ? {
+          banDate: new Date(),
+          isBanned: banDto.isBanned,
+        }
+      : { banDate: null, isBanned: banDto.isBanned };
+    return this.blogsModel.updateOne(
+      { id: id },
+      { $set: { banInfo: banBlogInfo } },
+    );
   }
 }

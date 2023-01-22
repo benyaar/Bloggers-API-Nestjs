@@ -20,8 +20,9 @@ import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from '../../auth/decorator/request.decorator';
 import { UserViewType } from '../../users/schemas/user.schema';
 import { CreatePostDto } from '../../post/dto/create-post.dto';
+import { BanUserDto } from '../dto/ban-user.dto';
 
-@Controller('blogger/blogs')
+@Controller('blogger')
 export class BloggersController {
   constructor(
     public blogsService: BloggersService,
@@ -29,7 +30,7 @@ export class BloggersController {
   ) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @Post('/blogs')
   async createBlog(
     @Body() blogInputType: CreateBlogDto,
     @User() user: UserViewType,
@@ -38,7 +39,7 @@ export class BloggersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get()
+  @Get('/blogs')
   async findBlogs(
     @Query() paginationInputType: PaginationInputDTO,
     @User() user: UserViewType,
@@ -46,13 +47,13 @@ export class BloggersController {
     return this.blogsService.findAllBlogs(paginationInputType, user.id);
   }
 
-  @Get(':id')
+  @Get('/blogs/:id')
   async findBlogById(@Param('id') id: string) {
     return this.queryBlogRepository.findBlogById(id);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put(':id')
+  @Put('blogs/:id')
   @HttpCode(204)
   async updateBlogById(
     @Param('id') id: string,
@@ -63,14 +64,14 @@ export class BloggersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Delete(':id')
+  @Delete('blogs/:id')
   @HttpCode(204)
   async deleteBlogById(@Param('id') id: string, @User() user: UserViewType) {
     return this.blogsService.deleteBlogById(id, user.id);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post(':id/posts')
+  @Post('blogs/:id/posts')
   async createPostByBlogId(
     @Param('id') id: string,
     @Body() postInputDTO: PostInputDTO,
@@ -79,7 +80,7 @@ export class BloggersController {
     return this.blogsService.createPostByBlogId(id, postInputDTO, user.id);
   }
 
-  @Get(':id/posts')
+  @Get('blogs/:id/posts')
   async findAllPostByBlogId(
     @Token() userId: string | null,
     @Param('id') id: string,
@@ -93,7 +94,7 @@ export class BloggersController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Put(':id/posts/:postId')
+  @Put('blogs/:id/posts/:postId')
   @HttpCode(204)
   async updatePostById(
     @Param('id') id: string,
@@ -101,8 +102,6 @@ export class BloggersController {
     @Body() createPostDto: CreatePostDto,
     @User() user: UserViewType,
   ) {
-    console.log(id);
-    console.log(postId);
     return this.blogsService.updateBlogPostById(
       id,
       postId,
@@ -120,5 +119,16 @@ export class BloggersController {
     @User() user: UserViewType,
   ) {
     return this.blogsService.deleteBlogPostById(id, postId, user.id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('users/:id/ban')
+  @HttpCode(204)
+  async addUserInBan(
+    @Param('id') id: string,
+    @Body() banUserDto: BanUserDto,
+    @User() user: UserViewType,
+  ) {
+    return this.blogsService.addUserInBan(id, banUserDto, user.id);
   }
 }

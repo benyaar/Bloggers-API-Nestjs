@@ -11,6 +11,12 @@ export class BlogOwnerInfo {
   userLogin: string;
 }
 
+export class BanInfo {
+  @Prop()
+  banDate: Date | null;
+  @Prop()
+  isBanned: boolean;
+}
 @Schema()
 export class Blog {
   @Prop()
@@ -25,6 +31,8 @@ export class Blog {
   createdAt: Date;
   @Prop()
   blogOwnerInfo: BlogOwnerInfo;
+  @Prop()
+  banInfo: BanInfo;
 
   checkName(name) {
     return `${name} + hello `;
@@ -40,6 +48,7 @@ export class Blog {
     newBlog.id = new ObjectId();
     newBlog.createdAt = new Date();
     newBlog.blogOwnerInfo = { userId, userLogin };
+    newBlog.banInfo = { banDate: null, isBanned: false };
     return newBlog;
   }
 }

@@ -15,6 +15,13 @@ import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { CommentsQueryRepository } from '../../comments/repository/comments.query-repository';
 import { UserViewType } from '../../users/schemas/user.schema';
 import { LikeStatusType } from '../schemas/like-status.schema';
+import { UsersQueryRepository } from '../../users/repository/users.query-repository';
+import { InjectModel } from '@nestjs/mongoose';
+import {
+  BannedUser,
+  BannedUserDocument,
+} from '../../bloggers/schemas/banned-User.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class PostsService {
@@ -23,6 +30,8 @@ export class PostsService {
     private postQueryRepository: PostQueryRepository,
     private commentsService: CommentsService,
     private commentsQueryRepository: CommentsQueryRepository,
+    @InjectModel(BannedUser.name)
+    private readonly bannedUserModel: Model<BannedUserDocument>,
   ) {}
   async createNewPost(createPostDto: CreatePostDtoWithUserId) {
     const findBlogById = await this.postQueryRepository.findBlogById(
@@ -79,6 +88,13 @@ export class PostsService {
   ) {
     const findPostById = await this.postQueryRepository.findPostById(id);
     if (!findPostById) throw new NotFoundException([]);
+
+    const findUserInBanList = await this.bannedUserModel.findOne({
+      blogId: findPostById.blogId,
+      userId: user.id,
+    });
+    if (findUserInBanList) throw new ForbiddenException([]);
+
     return this.commentsService.createNewComment(id, createCommentDto, user);
   }
   async findAllCommentsForPost(

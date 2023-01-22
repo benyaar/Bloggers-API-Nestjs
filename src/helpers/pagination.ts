@@ -19,6 +19,7 @@ const optionsForUser = {
   __v: 0,
   userId: 0,
   blogOwnerInfo: 0,
+  banInfo: 0,
 };
 const optionsForSa = {
   _id: 0,

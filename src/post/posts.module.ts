@@ -14,17 +14,24 @@ import { PaginationModule } from '../helpers/pagination.module';
 import { BlogIdValidator } from './decorators/blog-id-validator';
 import { BloggersModule } from '../bloggers/bloggers.module';
 import { User, UserSchema } from '../users/schemas/user.schema';
+import { UsersModule } from '../users/user.module';
+import {
+  BannedUser,
+  BannedUserSchema,
+} from '../bloggers/schemas/banned-User.schema';
 
 @Module({
   imports: [
     forwardRef(() => BloggersModule),
     CommentsModule,
     PaginationModule,
+    forwardRef(() => UsersModule),
     MongooseModule.forFeature([
       { name: Post.name, schema: PostSchema },
       { name: Blog.name, schema: BlogSchema },
       { name: User.name, schema: UserSchema },
       { name: LikeStatus.name, schema: LikeStatusSchema },
+      { name: BannedUser.name, schema: BannedUserSchema },
     ]),
   ],
   controllers: [PostsController],

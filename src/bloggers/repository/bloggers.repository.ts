@@ -7,12 +7,20 @@ import {
   BlogsViewModel,
 } from '../schemas/blogs.schema';
 import { CreateBlogDto } from '../dto/input-bloggers.dto';
+import {
+  BannedUser,
+  BannedUserDocument,
+  BannedUserType,
+} from '../schemas/banned-User.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class BloggersRepository {
   constructor(
     @InjectModel(Blog.name)
     private readonly blogModel: BlogsModelType,
+    @InjectModel(BannedUser.name)
+    private readonly bannedUserModel: Model<BannedUserDocument>,
   ) {}
   async saveBlogInDB(blog: BlogsDocument): Promise<BlogsViewModel> {
     return blog.save();
@@ -33,5 +41,9 @@ export class BloggersRepository {
   }
   async deleteBlogById(id: string, userId: string) {
     return this.blogModel.deleteOne({ id, 'blogOwnerInfo.userId': userId });
+  }
+
+  async addUserInBan(banInfo: BannedUserType) {
+    return this.bannedUserModel.insertMany(banInfo);
   }
 }

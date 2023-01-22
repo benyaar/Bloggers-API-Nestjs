@@ -14,6 +14,11 @@ import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { PostQueryRepository } from '../../post/repository/post.query-repository';
 import { UserViewType } from '../../users/schemas/user.schema';
 import { CreatePostDto } from '../../post/dto/create-post.dto';
+import { BanUserDto } from '../dto/ban-user.dto';
+import { UsersQueryRepository } from '../../users/repository/users.query-repository';
+import { BannedUserType } from '../schemas/banned-User.schema';
+import * as mongoose from 'mongoose';
+import ObjectId = mongoose.Types.ObjectId;
 
 @Injectable()
 export class BloggersService {
@@ -23,7 +28,8 @@ export class BloggersService {
     @InjectModel(Blog.name)
     private BlogModel: BlogsModelType,
     private blogQueryRepository: BloggersQueryRepository,
-    public postQueryRepository: PostQueryRepository,
+    private postQueryRepository: PostQueryRepository,
+    private userQueryRepository: UsersQueryRepository,
   ) {}
   async createNewBlog(
     blog: CreateBlogDto,
@@ -124,5 +130,24 @@ export class BloggersService {
     const findBlogById = await this.blogQueryRepository.findBlogById(id);
     if (!findBlogById) throw new NotFoundException([]);
     return this.postsService.deletePostById(postId, userId);
+  }
+
+  async addUserInBan(id: string, banUserDto: BanUserDto, ownerId: string) {
+    const findBlogById = await this.blogQueryRepository.findBlogByIdWithUserId(
+      banUserDto.blogId,
+    );
+    if (!findBlogById) throw new NotFoundException([]);
+
+    if (findBlogById.blogOwnerInfo.userId !== ownerId)
+      throw new ForbiddenException([]);
+
+    const findUser = await this.userQueryRepository.findUserById(id);
+    if (!findUser) throw new NotFoundException([]);
+    const banInfo = new BannedUserType(
+      new ObjectId().toString(),
+      banUserDto.blogId,
+      id,
+    );
+    return this.blogsRepository.addUserInBan(banInfo);
   }
 }

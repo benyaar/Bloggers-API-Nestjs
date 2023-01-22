@@ -23,6 +23,7 @@ import { RecoveryCodeType } from '../schemas/recovery-code.schema';
 import { BanUserDto } from '../dto/ban-user.dto';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { BloggersQueryRepository } from '../../bloggers/repository/bloggers.query-repository';
+import { BanBlogDto } from '../../bloggers/dto/input-bloggers.dto';
 
 @Injectable()
 export class UsersService {
@@ -177,8 +178,7 @@ export class UsersService {
           isBanned: banUserDto.isBanned,
         }
       : { banDate: null, banReason: null, isBanned: banUserDto.isBanned };
-    // user = ban
-    // no show likes, comments, delete devices
+
     const findUserById = await this.findUserById(id);
     if (!findUserById) throw new NotFoundException([]);
 
@@ -191,5 +191,9 @@ export class UsersService {
       null,
       'admin',
     );
+  }
+
+  async banBlogById(id: string, banDto: BanBlogDto) {
+    return this.blogQueryRepository.banBlogById(id, banDto);
   }
 }

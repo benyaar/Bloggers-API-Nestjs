@@ -1,4 +1,4 @@
-import { IsUrl, Length } from 'class-validator';
+import { IsBoolean, IsUrl, Length } from 'class-validator';
 import { Transform, TransformFnParams } from 'class-transformer';
 
 export class CreateBlogDto {
@@ -23,4 +23,10 @@ export class PostInputDTO {
   @Transform(({ value }: TransformFnParams) => value?.trim())
   @Length(1, 1000)
   content: string;
+}
+
+export class BanBlogDto {
+  @IsBoolean()
+  @Length(1)
+  isBanned: boolean;
 }

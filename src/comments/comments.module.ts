@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { CommentsService } from './application/comments.service';
 import { CommentsController } from './controller/comments.controller';
 import { CommentsRepository } from './repository/comments.repository';
@@ -12,6 +12,7 @@ import {
   LikeStatusSchema,
 } from '../post/schemas/like-status.schema';
 import { User, UserSchema } from '../users/schemas/user.schema';
+import { UsersModule } from '../users/user.module';
 
 @Module({
   imports: [
