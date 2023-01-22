@@ -21,7 +21,6 @@ import {
 } from '../../helpers/dto/helpers.dto';
 import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { BanUserDto } from '../dto/ban-user.dto';
-import { log } from 'util';
 
 @Controller('/sa')
 export class UsersController {
@@ -65,7 +64,7 @@ export class UsersController {
   }
 
   @UseGuards(BasicAuthGuard)
-  @Get('blogs')
+  @Get('bloggers')
   @HttpCode(200)
   async findBlogsWithOwnerId(@Query() paginationDto: PaginationInputDTO) {
     console.log(paginationDto);

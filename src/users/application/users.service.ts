@@ -22,7 +22,7 @@ import { CreateNewPasswordDto } from '../../auth/dto/create-new-password.dto';
 import { RecoveryCodeType } from '../schemas/recovery-code.schema';
 import { BanUserDto } from '../dto/ban-user.dto';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
-import { BlogQueryRepository } from '../../blogs/repository/blog.query-repository';
+import { BloggersQueryRepository } from '../../bloggers/repository/bloggers.query-repository';
 
 @Injectable()
 export class UsersService {
@@ -30,7 +30,7 @@ export class UsersService {
     private usersRepository: UsersRepository,
     private usersQueryRepository: UsersQueryRepository,
     private emailService: EmailService,
-    private blogQueryRepository: BlogQueryRepository,
+    private blogQueryRepository: BloggersQueryRepository,
   ) {}
   async createUser(inputUserDTO: InputUserDto) {
     const findUserByLogin = await this.usersQueryRepository.findUserByLogin(

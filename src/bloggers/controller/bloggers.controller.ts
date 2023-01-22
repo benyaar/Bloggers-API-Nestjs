@@ -10,22 +10,22 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { BlogsService } from '../application/blogs.service';
-import { CreateBlogDto, PostInputDTO } from '../dto/input-blog.dto';
-import { BlogQueryRepository } from '../repository/blog.query-repository';
+import { BloggersService } from '../application/bloggers.service';
+import { CreateBlogDto, PostInputDTO } from '../dto/input-bloggers.dto';
+import { BloggersQueryRepository } from '../repository/bloggers.query-repository';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { BlogsViewModel } from '../schemas/blogs.schema';
-import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { Token } from '../../decorators/token.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { User } from '../../auth/decorator/request.decorator';
 import { UserViewType } from '../../users/schemas/user.schema';
+import { CreatePostDto } from '../../post/dto/create-post.dto';
 
 @Controller('blogger/blogs')
-export class BlogsController {
+export class BloggersController {
   constructor(
-    public blogsService: BlogsService,
-    public queryBlogRepository: BlogQueryRepository,
+    public blogsService: BloggersService,
+    public queryBlogRepository: BloggersQueryRepository,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -43,7 +43,7 @@ export class BlogsController {
     @Query() paginationInputType: PaginationInputDTO,
     @User() user: UserViewType,
   ) {
-    return this.blogsService.findAllBlogs(paginationInputType, user);
+    return this.blogsService.findAllBlogs(paginationInputType, user.id);
   }
 
   @Get(':id')
@@ -71,7 +71,7 @@ export class BlogsController {
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/posts')
-  async createPostByBlodId(
+  async createPostByBlogId(
     @Param('id') id: string,
     @Body() postInputDTO: PostInputDTO,
     @User() user: UserViewType,
@@ -90,5 +90,33 @@ export class BlogsController {
       paginationInputDTO,
       userId,
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/posts/:postId')
+  @HttpCode(204)
+  async updatePostById(
+    @Param('id') id: string,
+    @Param('postId') postId: string,
+    @Body() createPostDto: CreatePostDto,
+    @User() user: UserViewType,
+  ) {
+    return this.blogsService.updateBlogPostById(
+      id,
+      postId,
+      user.id,
+      createPostDto,
+    );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete(':id/posts/:postId')
+  @HttpCode(204)
+  async deletePostById(
+    @Param('id') id: string,
+    @Param('postId') postId: string,
+    @User() user: UserViewType,
+  ) {
+    return this.blogsService.deleteBlogPostById(id, postId, user.id);
   }
 }

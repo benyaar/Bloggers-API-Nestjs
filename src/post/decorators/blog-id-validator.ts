@@ -4,12 +4,12 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { Injectable } from '@nestjs/common';
-import { BlogQueryRepository } from '../../blogs/repository/blog.query-repository';
+import { BloggersQueryRepository } from '../../bloggers/repository/bloggers.query-repository';
 
 @ValidatorConstraint({ name: 'IsMongoIdBlogDecorator', async: true })
 @Injectable()
 export class BlogIdValidator implements ValidatorConstraintInterface {
-  constructor(private blogQueryRepository: BlogQueryRepository) {}
+  constructor(private blogQueryRepository: BloggersQueryRepository) {}
   async validate(blogId: string) {
     try {
       const blog = await this.blogQueryRepository.findBlogById(blogId);

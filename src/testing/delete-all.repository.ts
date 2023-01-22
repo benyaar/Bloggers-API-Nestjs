@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { Blog, BlogsDocument } from '../blogs/schemas/blogs.schema';
+import { Blog, BlogsDocument } from '../bloggers/schemas/blogs.schema';
 import { Post, PostsDocument } from '../post/schemas/post.schema';
 import { User, UsersDocument } from '../users/schemas/user.schema';
 import { Comment, CommentsDocument } from '../comments/schema/comments.schema';

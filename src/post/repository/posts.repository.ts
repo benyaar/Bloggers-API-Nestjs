@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post, PostDBType, PostsDocument } from '../schemas/post.schema';
-import { Blog, BlogsDocument } from '../../blogs/schemas/blogs.schema';
+import { Blog, BlogsDocument } from '../../bloggers/schemas/blogs.schema';
 import { CreatePostDto } from '../dto/create-post.dto';
 import {
   LikeStatus,
@@ -23,9 +23,13 @@ export class PostsRepository {
   async createNewPost(newPost: PostDBType) {
     return this.postsModel.create(newPost);
   }
-  async updatePostById(id: string, inputPostDTO: CreatePostDto) {
+  async updatePostById(
+    id: string,
+    userId: string,
+    inputPostDTO: CreatePostDto,
+  ) {
     return this.postsModel.findOneAndUpdate(
-      { id },
+      { id, userId },
       {
         $set: {
           title: inputPostDTO.title,
@@ -36,8 +40,8 @@ export class PostsRepository {
       },
     );
   }
-  async deletePostById(id: string) {
-    return this.postsModel.deleteOne({ id });
+  async deletePostById(id: string, userId: string) {
+    return this.postsModel.deleteOne({ id, userId });
   }
 
   async updateLikeStatus(likeStatus: LikeStatusType) {

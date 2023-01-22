@@ -1,4 +1,4 @@
-import { BlogsViewModel } from '../blogs/schemas/blogs.schema';
+import { BlogsViewModel } from '../bloggers/schemas/blogs.schema';
 import { PostViewType } from '../post/schemas/post.schema';
 import { UserViewType } from '../users/schemas/user.schema';
 import { CommentViewType } from '../comments/schema/comments.schema';
@@ -63,18 +63,18 @@ export class PaginationHelp {
     } else {
       searchParentId = 'parentId';
     }
-    let searchUserId;
-    if (!userId) {
-      searchUserId = 'null';
-    } else {
-      searchUserId = 'userId';
-    }
+    // let searchUserId;
+    // if (!userId) {
+    //   searchUserId = 'null';
+    // } else {
+    //   searchUserId = 'blogOwnerInfo.';
+    // }
     const findAndSorteDocuments = await modelMongo
       .find(
         {
           name: { $regex: searchNameTerm, $options: 'i' },
           [searchParentId]: parentId,
-          [searchUserId]: userId,
+          'blogOwnerInfo.userId': userId,
         },
         options,
       )
@@ -135,12 +135,13 @@ export class PaginationHelp {
       });
       const findPostWithLikesByUserId = await this.likeStatusModel.findOne({
         parentId: post.id,
-        userId: userId,
+        $and: [{ userId: userId }, { userId: { $nin: bannedUsersId } }],
       });
       const findNewestPost = await this.likeStatusModel.find(
         {
           parentId: post.id,
           likeStatus: 'Like',
+          $and: [{ userId: userId }, { userId: { $nin: bannedUsersId } }],
         },
         { _id: 0, __v: 0, parentId: 0, likeStatus: 0 },
         { sort: { _id: -1 }, limit: 3 },
@@ -180,7 +181,7 @@ export class PaginationHelp {
       });
       const findCommentWithLikesByUserId = await this.likeStatusModel.findOne({
         parentId: comment.id,
-        userId: userId,
+        $and: [{ userId: userId }, { userId: { $nin: bannedUsersId } }],
       });
 
       comment.likesInfo.likesCount = countLikes;

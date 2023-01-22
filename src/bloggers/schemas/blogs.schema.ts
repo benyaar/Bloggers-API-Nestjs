@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Model, Types } from 'mongoose';
-import { CreateBlogDto } from '../dto/input-blog.dto';
+import { HydratedDocument, Model } from 'mongoose';
+import { CreateBlogDto } from '../dto/input-bloggers.dto';
 import * as mongoose from 'mongoose';
 import ObjectId = mongoose.Types.ObjectId;
 

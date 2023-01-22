@@ -1,10 +1,9 @@
 import { InjectModel } from '@nestjs/mongoose';
-import { Blog, BlogsDocument } from '../../blogs/schemas/blogs.schema';
+import { Blog, BlogsDocument } from '../../bloggers/schemas/blogs.schema';
 import { Model } from 'mongoose';
 import { Post, PostsDocument } from '../schemas/post.schema';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { PaginationHelp } from '../../helpers/pagination';
-import { Inject } from '@nestjs/common';
 import { User, UsersDocument } from '../../users/schemas/user.schema';
 
 const options = {

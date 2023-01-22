@@ -51,15 +51,19 @@ export class PostsService {
     const { parentId, userId, ...newPostcopy } = newPost;
     return newPostcopy;
   }
-  async updatePostById(id: string, inputPostDTO: CreatePostDto) {
+  async updatePostById(
+    id: string,
+    userId: string,
+    createPostDto: CreatePostDto,
+  ) {
     const findPostById = await this.postQueryRepository.findPostById(id);
     if (!findPostById) throw new NotFoundException([]);
-    return this.postsRepository.updatePostById(id, inputPostDTO);
+    return this.postsRepository.updatePostById(id, userId, createPostDto);
   }
-  async deletePostById(id: string) {
+  async deletePostById(id: string, userId: string) {
     const findPostById = await this.postQueryRepository.findPostById(id);
     if (!findPostById) throw new NotFoundException([]);
-    return this.postsRepository.deletePostById(id);
+    return this.postsRepository.deletePostById(id, userId);
   }
   async createNewCommentByPostId(
     id: string,

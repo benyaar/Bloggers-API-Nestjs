@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Blog, BlogsDocument } from '../schemas/blogs.schema';
 import { Model } from 'mongoose';
@@ -14,7 +14,7 @@ const options = {
   userLogin: 0,
 };
 @Injectable()
-export class BlogQueryRepository {
+export class BloggersQueryRepository {
   constructor(
     @InjectModel(Blog.name)
     public blogsModel: Model<BlogsDocument>,

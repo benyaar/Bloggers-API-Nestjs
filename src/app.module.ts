@@ -1,9 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/user.module';
-import { BlogsModule } from './blogs/blogs.module';
+import { BloggersModule } from './bloggers/bloggers.module';
 import { PostsModule } from './post/posts.module';
 import { DeleteAllModule } from './testing/delete-all.module';
 import { AuthModule } from './auth/auth.module';
@@ -18,7 +18,7 @@ import { EmailModule } from './email/email.module';
       envFilePath: '.env',
     }),
     UsersModule,
-    BlogsModule,
+    BloggersModule,
     PostsModule,
     DeleteAllModule,
     AuthModule,

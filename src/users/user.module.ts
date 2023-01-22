@@ -12,13 +12,13 @@ import {
   RecoveryCodeSchema,
 } from './schemas/recovery-code.schema';
 import { PaginationModule } from '../helpers/pagination.module';
-import { BlogsModule } from '../blogs/blogs.module';
+import { BloggersModule } from '../bloggers/bloggers.module';
 
 @Module({
   imports: [
     EmailModule,
     PaginationModule,
-    BlogsModule,
+    BloggersModule,
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: RecoveryCode.name, schema: RecoveryCodeSchema },

@@ -3,24 +3,25 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { BlogsRepository } from '../repository/blogs.repository';
-import { CreateBlogDto, PostInputDTO } from '../dto/input-blog.dto';
+import { BloggersRepository } from '../repository/bloggers.repository';
+import { CreateBlogDto, PostInputDTO } from '../dto/input-bloggers.dto';
 import { Blog, BlogsModelType, BlogsViewModel } from '../schemas/blogs.schema';
 import { InjectModel } from '@nestjs/mongoose';
-import { BlogQueryRepository } from '../repository/blog.query-repository';
+import { BloggersQueryRepository } from '../repository/bloggers.query-repository';
 import { PostsService } from '../../post/application/posts.service';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { PostQueryRepository } from '../../post/repository/post.query-repository';
 import { UserViewType } from '../../users/schemas/user.schema';
+import { CreatePostDto } from '../../post/dto/create-post.dto';
 
 @Injectable()
-export class BlogsService {
+export class BloggersService {
   constructor(
-    private blogsRepository: BlogsRepository,
+    private blogsRepository: BloggersRepository,
     private postsService: PostsService,
     @InjectModel(Blog.name)
     private BlogModel: BlogsModelType,
-    private blogQueryRepository: BlogQueryRepository,
+    private blogQueryRepository: BloggersQueryRepository,
     public postQueryRepository: PostQueryRepository,
   ) {}
   async createNewBlog(
@@ -85,14 +86,28 @@ export class BlogsService {
     );
   }
 
-  async findAllBlogs(
-    paginationInputType: PaginationInputDTO,
-    user: UserViewType,
-  ) {
+  async findAllBlogs(paginationInputType: PaginationInputDTO, userId: string) {
     return this.blogQueryRepository.findAllBlogs(
       paginationInputType,
-      user.id,
+      userId,
       'user',
     );
+  }
+
+  async updateBlogPostById(
+    id: string,
+    postId: string,
+    userId: string,
+    createPostDto: CreatePostDto,
+  ) {
+    const findBlogById = await this.blogQueryRepository.findBlogById(id);
+    if (!findBlogById) throw new NotFoundException([]);
+    return this.postsService.updatePostById(postId, userId, createPostDto);
+  }
+
+  async deleteBlogPostById(id: string, postId: string, userId: string) {
+    const findBlogById = await this.blogQueryRepository.findBlogById(id);
+    if (!findBlogById) throw new NotFoundException([]);
+    return this.postsService.deletePostById(postId, userId);
   }
 }

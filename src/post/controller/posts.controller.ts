@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   HttpCode,
   NotFoundException,
@@ -13,7 +12,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PostsService } from '../application/posts.service';
-import { CreatePostDto } from '../dto/create-post.dto';
 import { PostQueryRepository } from '../repository/post.query-repository';
 import { PaginationInputDTO } from '../../helpers/dto/helpers.dto';
 import { CreateCommentDto } from '../dto/create-comment.dto';
@@ -22,7 +20,6 @@ import { UserViewType } from '../../users/schemas/user.schema';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Cookies } from '../../auth/decorator/cookies.decorator';
 import { Request } from 'express';
-import { BasicAuthGuard } from '../../auth/guards/basic-auth.guard';
 import { LikeStatusDto } from '../dto/like-status.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Token } from '../../decorators/token.decorator';
@@ -33,12 +30,6 @@ export class PostsController {
     public postsService: PostsService,
     public postQueryRepository: PostQueryRepository,
   ) {}
-
-  // @UseGuards(BasicAuthGuard)
-  // @Post()
-  // async createPost(@Body() createPostDto: CreatePostDto) {
-  //   return this.postsService.createNewPost(createPostDto);
-  // }
 
   @Get()
   async findAllPosts(
@@ -57,23 +48,6 @@ export class PostsController {
     );
     if (!findPostById) throw new NotFoundException([]);
     return findPostById;
-  }
-
-  @UseGuards(BasicAuthGuard)
-  @Put(':id')
-  @HttpCode(204)
-  async updatePostById(
-    @Param('id') id: string,
-    @Body() createPostDto: CreatePostDto,
-  ) {
-    return this.postsService.updatePostById(id, createPostDto);
-  }
-
-  @UseGuards(BasicAuthGuard)
-  @Delete(':id')
-  @HttpCode(204)
-  async deletePostById(@Param('id') id: string) {
-    return this.postsService.deletePostById(id);
   }
 
   @UseGuards(JwtAuthGuard)
