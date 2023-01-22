@@ -35,7 +35,6 @@ export class PostsRepository {
           title: inputPostDTO.title,
           shortDescription: inputPostDTO.shortDescription,
           content: inputPostDTO.content,
-          blogId: inputPostDTO.blogId,
         },
       },
     );

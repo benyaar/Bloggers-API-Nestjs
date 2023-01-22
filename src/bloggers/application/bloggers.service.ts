@@ -75,8 +75,13 @@ export class BloggersService {
     postInputDTO: PostInputDTO,
     userId: string,
   ) {
-    const findBlogById = await this.blogQueryRepository.findBlogById(id);
+    const findBlogById = await this.blogQueryRepository.findBlogByIdWithUserId(
+      id,
+    );
     if (!findBlogById) throw new NotFoundException([]);
+    if (findBlogById.blogOwnerInfo.userId !== userId)
+      throw new ForbiddenException([]);
+
     const postData = { ...postInputDTO, blogId: id, userId: userId };
     return this.postsService.createNewPost(postData);
   }
