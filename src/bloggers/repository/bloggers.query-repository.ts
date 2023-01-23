@@ -104,6 +104,12 @@ export class BloggersQueryRepository {
   }
 
   async getCommentsForBlog(inputDTO: PaginationInputDTO, id: string) {
-    return this.pagination.getCommentsForBlog(inputDTO, id);
+    const findComments = await this.pagination.getCommentsForBlog(inputDTO, id);
+    return this.pagination.paginationResult(
+      findComments.pageNumber,
+      findComments.pageSize,
+      findComments.getCountDocuments,
+      findComments.commentsWithInfo,
+    );
   }
 }

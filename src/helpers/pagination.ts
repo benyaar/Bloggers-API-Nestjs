@@ -303,6 +303,10 @@ export class PaginationHelp {
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize);
 
+    const getCountDocuments = await this.commentModel.countDocuments({
+      parentId: { $in: findPostByBlogId },
+    });
+
     const CommentsWithLikeStatus = await this.commentsWithLikeStatus(
       findCommentsByPostId,
       null,
@@ -330,7 +334,12 @@ export class PaginationHelp {
       };
       commentsWithInfo.push(commentInfo);
     }
-    console.log(commentsWithInfo);
-    return;
+
+    return {
+      pageNumber,
+      pageSize,
+      getCountDocuments,
+      commentsWithInfo,
+    };
   }
 }
