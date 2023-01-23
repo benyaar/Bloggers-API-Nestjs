@@ -141,7 +141,7 @@ export class BloggersController {
   @HttpCode(200)
   async getAllBannedUserForBlog(
     @Param('id') id: string,
-    @Body() inputDTO: PaginationUserInputDTO,
+    @Query() inputDTO: PaginationUserInputDTO,
     @User() user: UserViewType,
   ) {
     return this.queryBlogRepository.getAllBannedUserForBlog(
@@ -150,4 +150,14 @@ export class BloggersController {
       user.id,
     );
   }
+
+  // @UseGuards(JwtAuthGuard)
+  // @Get('blogs/comments')
+  // @HttpCode(200)
+  // async getCommentsForBlog(
+  //   @Body() inputDTO: PaginationUserInputDTO,
+  //   @User() user: UserViewType,
+  // ) {
+  //   return this.queryBlogRepository.getAllBannedUserForBlog(inputDTO, user.id);
+  // }
 }
