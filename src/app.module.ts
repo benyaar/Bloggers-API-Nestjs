@@ -24,8 +24,8 @@ import { EmailModule } from './email/email.module';
     AuthModule,
     MongooseModule.forRoot(
       //'mongodb+srv://admin:admin@backapi.wojaaxk.mongodb.net/?retryWrites=true&w=majority',
-      //'mongodb+srv://admin:admin@cluster0.bwcg5bs.mongodb.net/?retryWrites=true&w=majority',
-      'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1',
+      'mongodb+srv://admin:admin@cluster0.bwcg5bs.mongodb.net/?retryWrites=true&w=majority',
+      //'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1',
     ),
     CommentsModule,
     MailerModule.forRoot({
