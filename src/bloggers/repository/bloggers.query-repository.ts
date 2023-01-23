@@ -102,4 +102,8 @@ export class BloggersQueryRepository {
       findAllBannedUser.findAndSortedDocuments,
     );
   }
+
+  async getCommentsForBlog(inputDTO: PaginationInputDTO, id: string) {
+    return this.pagination.getCommentsForBlog(inputDTO, id);
+  }
 }

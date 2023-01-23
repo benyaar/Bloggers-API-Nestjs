@@ -1,7 +1,15 @@
-import { BlogsViewModel } from '../bloggers/schemas/blogs.schema';
-import { PostViewType } from '../post/schemas/post.schema';
+import {
+  Blog,
+  BlogsDocument,
+  BlogsViewModel,
+} from '../bloggers/schemas/blogs.schema';
+import { Post, PostsDocument, PostViewType } from '../post/schemas/post.schema';
 import { UserViewType } from '../users/schemas/user.schema';
-import { CommentViewType } from '../comments/schema/comments.schema';
+import {
+  Comment,
+  CommentsDocument,
+  CommentViewType,
+} from '../comments/schema/comments.schema';
 import {
   PaginationBannedUserInputDTO,
   PaginationInputDTO,
@@ -51,6 +59,12 @@ export class PaginationHelp {
     private readonly likeStatusModel: Model<LikeStatusDocument>,
     @InjectModel(BannedUser.name)
     private readonly bannedUserModel: Model<BannedUserDocument>,
+    @InjectModel(Post.name)
+    private readonly postModel: Model<PostsDocument>,
+    @InjectModel(Blog.name)
+    private readonly blogModel: Model<BlogsDocument>,
+    @InjectModel(Comment.name)
+    private readonly commentModel: Model<CommentsDocument>,
   ) {}
   async pagination(
     parentId: string | null,
@@ -192,7 +206,7 @@ export class PaginationHelp {
   async commentsWithLikeStatus(
     findAndSortedComments: any,
     userId: string | null,
-    bannedUsersId: string[],
+    bannedUsersId: string[] | null,
   ) {
     const commentWithLikeStatus = [];
     for (const comment of findAndSortedComments) {
@@ -263,5 +277,60 @@ export class PaginationHelp {
       getCountDocuments,
       findAndSortedDocuments,
     };
+  }
+
+  async getCommentsForBlog(inputDTO: PaginationInputDTO, userId: string) {
+    const sortBy: string = inputDTO.sortBy;
+    const pageNumber: number = +inputDTO.pageNumber;
+    const pageSize: number = +inputDTO.pageSize;
+    let sortDirection: any = inputDTO.sortDirection;
+    if (sortDirection !== ('asc' || 'desc')) sortDirection = 'desc';
+
+    const findBlogByUserId = await this.blogModel.distinct('id', {
+      'blogOwnerInfo.userId': userId,
+    });
+
+    const findPostByBlogId = await this.postModel.distinct('id', {
+      blogId: { $in: findBlogByUserId },
+    });
+
+    const findCommentsByPostId = await this.commentModel
+      .find({
+        parentId: { $in: findPostByBlogId },
+      })
+      .lean()
+      .sort({ [sortBy]: sortDirection })
+      .skip((pageNumber - 1) * pageSize)
+      .limit(pageSize);
+
+    const CommentsWithLikeStatus = await this.commentsWithLikeStatus(
+      findCommentsByPostId,
+      null,
+      null,
+    );
+
+    const commentsWithInfo = [];
+
+    for (const comment of CommentsWithLikeStatus) {
+      const commentInfo = {
+        id: comment.id,
+        content: comment.content,
+        createdAt: new Date(),
+        likesInfo: comment.likesInfo,
+        commentatorInfo: {
+          userId: comment.userId,
+          userLogin: comment.userLogin,
+        },
+        postInfo: {
+          id: comment.parentId,
+          title: 'string',
+          blogId: 'string',
+          blogName: 'string',
+        },
+      };
+      commentsWithInfo.push(commentInfo);
+    }
+    console.log(commentsWithInfo);
+    return;
   }
 }

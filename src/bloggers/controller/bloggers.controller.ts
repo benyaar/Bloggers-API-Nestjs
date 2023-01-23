@@ -51,6 +51,16 @@ export class BloggersController {
     return this.blogsService.findAllBlogs(paginationInputType, user.id);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('blogs/comments')
+  @HttpCode(200)
+  async getCommentsForBlog(
+    @Query() inputDTO: PaginationInputDTO,
+    @User() user: UserViewType,
+  ) {
+    return this.queryBlogRepository.getCommentsForBlog(inputDTO, user.id);
+  }
+
   @Get('/blogs/:id')
   async findBlogById(@Param('id') id: string) {
     return this.queryBlogRepository.findBlogById(id);
@@ -150,14 +160,4 @@ export class BloggersController {
       user.id,
     );
   }
-
-  // @UseGuards(JwtAuthGuard)
-  // @Get('blogs/comments')
-  // @HttpCode(200)
-  // async getCommentsForBlog(
-  //   @Body() inputDTO: PaginationUserInputDTO,
-  //   @User() user: UserViewType,
-  // ) {
-  //   return this.queryBlogRepository.getAllBannedUserForBlog(inputDTO, user.id);
-  // }
 }
