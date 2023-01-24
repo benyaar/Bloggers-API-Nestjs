@@ -323,9 +323,9 @@ export class PaginationHelp {
         },
         postInfo: {
           id: comment.parentId,
-          title: 'string',
-          blogId: 'string',
-          blogName: 'string',
+          title: comment.postInfo.title,
+          blogId: comment.postInfo.blogId,
+          blogName: comment.postInfo.blogName,
         },
       };
       commentsWithInfo.push(commentInfo);
