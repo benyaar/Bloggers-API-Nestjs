@@ -9,6 +9,14 @@ class LikesInfo {
   @Prop()
   myStatus: string;
 }
+class PostInfo {
+  @Prop()
+  title: string;
+  @Prop()
+  blogId: string;
+  @Prop()
+  blogName: string;
+}
 
 @Schema()
 export class Comment {
@@ -26,6 +34,8 @@ export class Comment {
   parentId: string;
   @Prop()
   likesInfo: LikesInfo;
+  @Prop()
+  postInfo: PostInfo;
 }
 
 export const CommentsSchema = SchemaFactory.createForClass(Comment);
@@ -43,6 +53,11 @@ export class CommentDBModalType {
       likesCount: number;
       dislikesCount: number;
       myStatus: string;
+    },
+    public postInfo: {
+      title: string;
+      blogId: string;
+      blogName: string;
     },
   ) {}
 }

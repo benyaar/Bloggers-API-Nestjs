@@ -12,6 +12,7 @@ import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { CommentsQueryRepository } from '../repository/comments.query-repository';
 import { UserViewType } from '../../users/schemas/user.schema';
 import { LikeStatusType } from '../../post/schemas/like-status.schema';
+import { PostDBType } from '../../post/schemas/post.schema';
 
 @Injectable()
 export class CommentsService {
@@ -23,6 +24,7 @@ export class CommentsService {
     id: string,
     createCommentDto: CreateCommentDto,
     user: UserViewType,
+    post: PostDBType,
   ) {
     const newComment: CommentDBModalType = new CommentDBModalType(
       new ObjectId().toString(),
@@ -35,6 +37,11 @@ export class CommentsService {
         likesCount: 0,
         dislikesCount: 0,
         myStatus: 'None',
+      },
+      {
+        title: post.title,
+        blogId: post.blogId,
+        blogName: post.blogName,
       },
     );
     await this.commentsRepository.saveNewComment(newComment);

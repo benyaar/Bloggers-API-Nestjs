@@ -10,11 +10,7 @@ import {
   CommentsDocument,
   CommentViewType,
 } from '../comments/schema/comments.schema';
-import {
-  PaginationBannedUserInputDTO,
-  PaginationInputDTO,
-  PaginationUserInputDTO,
-} from './dto/helpers.dto';
+import { PaginationInputDTO, PaginationUserInputDTO } from './dto/helpers.dto';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import {
@@ -319,7 +315,7 @@ export class PaginationHelp {
       const commentInfo = {
         id: comment.id,
         content: comment.content,
-        createdAt: new Date(),
+        createdAt: comment.createdAt,
         likesInfo: comment.likesInfo,
         commentatorInfo: {
           userId: comment.userId,

@@ -95,7 +95,12 @@ export class PostsService {
     });
     if (findUserInBanList) throw new ForbiddenException([]);
 
-    return this.commentsService.createNewComment(id, createCommentDto, user);
+    return this.commentsService.createNewComment(
+      id,
+      createCommentDto,
+      user,
+      findPostById,
+    );
   }
   async findAllCommentsForPost(
     id: string,
