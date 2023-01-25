@@ -30,7 +30,6 @@ const optionsForUser = {
   parentId: 0,
   emailConfirmation: 0,
   __v: 0,
-  userId: 0,
   blogOwnerInfo: 0,
   banInfo: 0,
   postInfo: 0,
