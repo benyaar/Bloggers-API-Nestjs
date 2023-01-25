@@ -49,6 +49,13 @@ const optionsForBannedUser = {
   blogId: 0,
 };
 
+const optionsForComment = {
+  _id: 0,
+  parentId: 0,
+  __v: 0,
+  postInfo: 0,
+};
+
 @Injectable()
 export class PaginationHelp {
   constructor(
@@ -81,6 +88,8 @@ export class PaginationHelp {
     let options;
     if (superAdmin === 'admin') {
       options = optionsForSa;
+    } else if (superAdmin === 'comment') {
+      options = optionsForComment;
     } else {
       options = optionsForUser;
     }
