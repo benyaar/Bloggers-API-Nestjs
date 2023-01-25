@@ -11,8 +11,8 @@ import { CommentsModule } from './comments/comments.module';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from './email/email.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './users/entities/user.entity';
+//import { TypeOrmModule } from '@nestjs/typeorm';
+//import { UserEntity } from './users/entities/user.entity';
 
 @Module({
   imports: [

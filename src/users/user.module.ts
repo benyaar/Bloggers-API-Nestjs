@@ -13,8 +13,8 @@ import {
 } from './schemas/recovery-code.schema';
 import { PaginationModule } from '../helpers/pagination.module';
 import { BloggersModule } from '../bloggers/bloggers.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from './entities/user.entity';
+//import { TypeOrmModule } from '@nestjs/typeorm';
+//import { UserEntity } from './entities/user.entity';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { UserEntity } from './entities/user.entity';
       { name: User.name, schema: UserSchema },
       { name: RecoveryCode.name, schema: RecoveryCodeSchema },
     ]),
-    TypeOrmModule.forFeature([UserEntity]),
+    //TypeOrmModule.forFeature([UserEntity]),
   ],
   controllers: [UsersController],
   providers: [UsersService, UsersRepository, UsersQueryRepository],
