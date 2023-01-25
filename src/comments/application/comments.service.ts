@@ -45,7 +45,7 @@ export class CommentsService {
       },
     );
     await this.commentsRepository.saveNewComment(newComment);
-    const { parentId, ...newCommentCopy } = newComment;
+    const { parentId, postInfo, ...newCommentCopy } = newComment;
     return newCommentCopy;
   }
   async updateCommentById(

@@ -33,6 +33,7 @@ const optionsForUser = {
   userId: 0,
   blogOwnerInfo: 0,
   banInfo: 0,
+  postInfo: 0,
 };
 const optionsForSa = {
   _id: 0,
