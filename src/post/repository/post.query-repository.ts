@@ -100,7 +100,9 @@ export class PostQueryRepository {
   }
   async findPostByIdWithLike(id: string, userId: string | null) {
     const findsPostById = await this.postsModel.find({ id }, options);
+    if (!findsPostById) throw new NotFoundException([]);
     const findPost = await this.postsModel.findOne({ id }, options);
+    if (!findPost) throw new NotFoundException([]);
     const findBlogId = await this.blogsModel.findOne({ id: findPost.blogId });
 
     if (findBlogId.banInfo.isBanned) throw new NotFoundException([]);
