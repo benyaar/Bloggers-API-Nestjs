@@ -12,7 +12,6 @@ import {
   RecoveryCode,
   RecoveryCodeDocument,
 } from '../schemas/recovery-code.schema';
-import { BanUserDto } from '../dto/ban-user.dto';
 
 @Injectable()
 export class UsersRepository {

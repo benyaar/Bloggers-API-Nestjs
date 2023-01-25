@@ -11,6 +11,8 @@ import { CommentsModule } from './comments/comments.module';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from './email/email.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './users/entities/user.entity';
 
 @Module({
   imports: [
@@ -38,6 +40,17 @@ import { EmailModule } from './email/email.module';
       },
     }),
     EmailModule,
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'root',
+      database: 'bloggers',
+      autoLoadEntities: true,
+      synchronize: true,
+      entities: [UserEntity],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
