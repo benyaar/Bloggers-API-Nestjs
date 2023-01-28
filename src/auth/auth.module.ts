@@ -61,11 +61,13 @@ import { Device, DeviceSchema } from '../devices/schemas/devices.schema';
 })
 export class AuthModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AttemptsMiddleware).forRoutes(
-      {
-        path: '/auth/registration-email-resending',
-        method: RequestMethod.POST,
-      },
+    consumer
+      .apply(AttemptsMiddleware)
+      .forRoutes
+      // {
+      //   path: '/auth/registration-email-resending',
+      //   method: RequestMethod.POST,
+      // },
       // {
       //   path: '/auth/registration',
       //   method: RequestMethod.POST,
@@ -78,6 +80,6 @@ export class AuthModule implements NestModule {
       //   path: '/auth/registration-confirmation',
       //   method: RequestMethod.POST,
       // },
-    );
+      ();
   }
 }
