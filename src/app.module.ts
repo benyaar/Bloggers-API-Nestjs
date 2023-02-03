@@ -11,8 +11,10 @@ import { CommentsModule } from './comments/comments.module';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { EmailModule } from './email/email.module';
-//import { TypeOrmModule } from '@nestjs/typeorm';
-//import { UserEntity } from './users/entities/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './users/entities/user.entity';
+import { BanInfoEntity } from './users/entities/ban-info.entity';
+import { EmailConfirmationEntity } from './users/entities/email-info.entity';
 
 @Module({
   imports: [
@@ -26,8 +28,8 @@ import { EmailModule } from './email/email.module';
     AuthModule,
     MongooseModule.forRoot(
       //'mongodb+srv://admin:admin@backapi.wojaaxk.mongodb.net/?retryWrites=true&w=majority',
-      'mongodb+srv://admin:admin@cluster0.bwcg5bs.mongodb.net/?retryWrites=true&w=majority',
-      //'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1',
+      //'mongodb+srv://admin:admin@cluster0.bwcg5bs.mongodb.net/?retryWrites=true&w=majority',
+      'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1',
     ),
     CommentsModule,
     MailerModule.forRoot({
@@ -42,15 +44,26 @@ import { EmailModule } from './email/email.module';
     EmailModule,
     // TypeOrmModule.forRoot({
     //   type: 'postgres',
-    //   host: 'localhost',
-    //   port: 5432,
-    //   username: 'postgres',
-    //   password: 'root',
-    //   database: 'bloggers',
+    //   host: 'ep-floral-boat-614489.eu-central-1.aws.neon.tech',
+    //   username: 'benyaar',
+    //   password: 'mL61YeDpnByc',
+    //   database: 'neondb',
     //   autoLoadEntities: true,
     //   synchronize: true,
     //   entities: [UserEntity],
+    //   ssl: true,
     // }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      username: 'postgres',
+      port: 5432,
+      password: 'root',
+      database: 'bloggers',
+      autoLoadEntities: true,
+      synchronize: true,
+      entities: [UserEntity, BanInfoEntity, EmailConfirmationEntity],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

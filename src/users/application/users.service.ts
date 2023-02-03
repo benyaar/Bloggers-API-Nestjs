@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UsersRepository } from '../repository/users.repository';
+import { UsersRepository } from '../repository/users.sql.repository';
 import {
   BanInfo,
   EmailConfirmation,
@@ -11,8 +11,6 @@ import {
   UserViewType,
 } from '../schemas/user.schema';
 import { InputUserDto } from '../dto/input-user.dto';
-import * as mongoose from 'mongoose';
-import ObjectId = mongoose.Types.ObjectId;
 import * as bcrypt from 'bcrypt';
 import { UsersQueryRepository } from '../repository/users.query-repository';
 import { add } from 'date-fns';
@@ -54,7 +52,7 @@ export class UsersService {
     const hash = await bcrypt.hash(password, salt);
     const code = uuidv4();
     const createNewUser = new UserViewType(
-      new ObjectId().toString(),
+      uuidv4(),
       inputUserDTO.login,
       inputUserDTO.email,
       hash,
